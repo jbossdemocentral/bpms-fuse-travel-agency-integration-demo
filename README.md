@@ -61,7 +61,6 @@ See the tagged releases for the following versions of the product:
 - v1.0 - JBoss BPM Suite 6.1 and JBoss Fuse 6.1 running travel agency demo with micro-services.
 
 
-[![Video Demo Run] (https://raw.githubusercontent.com/jbossdemocentral/brms-fuse-integration-demo/master/docs/demo-images/video-demo-run.png)](http://vimeo.com/ericschabell/bpmsuite-fuse-integraiton-demo-run)
 ![Fuse Container] (https://raw.githubusercontent.com/jbossdemocentral/brms-fuse-integration-demo/master/docs/demo-images/container.png)
 ![Fuse Camel Route] (https://raw.githubusercontent.com/jbossdemocentral/brms-fuse-integration-demo/master/docs/demo-images/camelroute.png)
 ![BPM Suite Process] (https://raw.githubusercontent.com/jbossdemocentral/brms-fuse-integration-demo/master/docs/demo-images/customer-evaluation.png)
