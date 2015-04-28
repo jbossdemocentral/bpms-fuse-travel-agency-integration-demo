@@ -50,6 +50,16 @@ echo
 command -v mvn -q >/dev/null 2>&1 || { echo >&2 "Maven is required but not installed yet... aborting."; exit 1; }
 
 # make some checks first before proceeding.	
+if [ -r $SRC_DIR/$EAP ] || [ -L $SRC_DIR/$EAP ]; then
+	echo Product sources are present...
+	echo
+else
+	echo Need to download $EAP package from the Customer Portal 
+	echo and place it in the $SRC_DIR directory to proceed...
+	echo
+	exit
+fi
+
 if [ -r $SRC_DIR/$BPMS ] || [ -L $SRC_DIR/$BPMS ]; then
 	echo Product sources BPM are present...
 	echo
@@ -79,8 +89,18 @@ if [ -x target ]; then
 	rm -rf target
 fi
 
-# Run installer.
-echo Product BPM installer running now...
+# Run installers.
+echo "JBoss EAP installer running now..."
+echo
+java -jar $SRC_DIR/$EAP $SUPPORT_DIR/installation-eap -variablefile $SUPPORT_DIR/installation-eap.variables
+
+if [ $? -ne 0 ]; then
+	echo
+	echo Error occurred during JBoss EAP installation!
+	exit
+fi
+
+echo "JBoss BPM Suite installer running now..."
 echo
 java -jar $SRC_DIR/$BPMS $SUPPORT_DIR/installation-bpms -variablefile $SUPPORT_DIR/installation-bpms.variables
 
@@ -116,6 +136,10 @@ cp $SUPPORT_DIR/standalone.xml $SERVER_CONF
 echo "  - making sure standalone.sh for server is executable..."
 echo
 chmod u+x $JBOSS_HOME/bin/standalone.sh
+
+echo "  - setup email task notification users..."
+echo
+cp $SUPPORT_DIR/userinfo.properties $SERVER_DIR/business-central.war/WEB-INF/classes/
 
 echo "  - enabling demo accounts logins in users.properties file..."
 echo
@@ -173,6 +197,6 @@ echo "=                                                                         
 echo "=        $FUSE_HOME/instances/c1/src/data                       =" 
 echo "=                                                                                         ="
 echo "=                                                                                         ="
-echo "=   $DEMO Setup Complete.                                    ="
+echo "=   $DEMO Setup Complete.                 ="
 echo "==========================================================================================="
 echo
