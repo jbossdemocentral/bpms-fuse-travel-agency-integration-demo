@@ -1,0 +1,13 @@
+[core]
+	symlinks = false
+	repositoryformatversion = 0
+	filemode = true
+	bare = true
+	logallrefupdates = false
+	precomposeunicode = true
+[remote "origin"]
+	url = file:///Users/erics/demo-projects/bpms/bpms-customer-evaluation-demo/support/bpm-suite-demo-niogit/customer.git
+	fetch = +refs/heads/*:refs/heads/*
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
