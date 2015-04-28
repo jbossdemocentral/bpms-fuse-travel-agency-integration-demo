@@ -151,10 +151,12 @@ cp $SUPPORT_DIR/users.properties $SERVER_CONF_FUSE
 #cp $SUPPORT_DIR/1000_jbpm_demo_h2.sql $SERVER_DIR/dashbuilder.war/WEB-INF/etc/sql
 #echo
 
-echo Now going to build the projects...
-echo
-cd $PRJ_DIR
-mvn clean install 
+# TODO: add fuse projects to dir.
+#
+#echo Now going to build the projects...
+#echo
+#cd $PRJ_DIR
+#mvn clean install 
 
 echo
 echo "==========================================================================================="
