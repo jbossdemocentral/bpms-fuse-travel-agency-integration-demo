@@ -71,4 +71,4 @@ See the tagged releases for the following versions of the product:
 
 ![Started Process](https://raw.githubusercontent.com/eschabell/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/started-process.png)
 
-![BPM Suite BAM] (https://raw.githubusercontent.com/eschabell/bpms-fuse-integration-demo/master/docs/demo-images/bam-dashboard.png)
+![BPM Suite BAM] (https://raw.githubusercontent.com/eschabell/bpms-fuse-integration-demo/master/docs/demo-images/mock-bpm-data.png)
