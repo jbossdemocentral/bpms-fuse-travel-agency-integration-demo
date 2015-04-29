@@ -67,7 +67,7 @@ See the tagged releases for the following versions of the product:
 
 ![Compensation](https://raw.githubusercontent.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/compensation-process.png?raw=true)
 
-![Special Trips UI Form](https://raw.githubusercontent.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/SpecialTripsUIform.png)
+![Special Trips UI Form](https://raw.githubusercontent.com/eschabell/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/SpecialTripsUIform.png)
 
 ![Started Process](https://raw.githubusercontent.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/started-process.png)
 
