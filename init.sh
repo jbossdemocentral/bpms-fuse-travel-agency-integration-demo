@@ -129,6 +129,20 @@ echo "  - setting up demo projects..."
 echo
 cp -r $SUPPORT_DIR/bpm-suite-demo-niogit $SERVER_BIN/.niogit
 
+echo "  - setting up web services..."
+echo
+mvn clean install -f $PRJ_DIR/pom.xml
+cp -r $PRJ_DIR/acme-demo-flight-service/target/acme-flight-service-1.0.war $SERVER_DIR
+cp -r $PRJ_DIR/acme-demo-hotel-service/target/acme-hotel-service-1.0.war $SERVER_DIR
+
+echo
+echo "  - adding acmeDataModel-1.0.jar to business-central.war/WEB-INF/lib"
+cp -r $PRJ_DIR/acme-data-model/target/acmeDataModel-1.0.jar $SERVER_DIR/business-central.war/WEB-INF/lib
+
+echo
+echo "  - deploying external-client-ui-form-1.0.war to EAP deployments directory"
+cp -r $PRJ_DIR/external-client-ui-form/target/external-client-ui-form-1.0.war $SERVER_DIR/
+
 echo "  - setting up standalone.xml configuration adjustments..."
 echo
 cp $SUPPORT_DIR/standalone.xml $SERVER_CONF
@@ -140,6 +154,10 @@ chmod u+x $JBOSS_HOME/bin/standalone.sh
 echo "  - setup email task notification users..."
 echo
 cp $SUPPORT_DIR/userinfo.properties $SERVER_DIR/business-central.war/WEB-INF/classes/
+
+echo "  - updating the CustomWorkItemHandler.conf file to use the appropriate email server..."
+echo
+cp -f $SUPPORT_DIR/CustomWorkItemHandlers.conf $SERVER_DIR/business-central.war/WEB-INF/classes/META-INF
 
 echo "  - enabling demo accounts logins in users.properties file..."
 echo
@@ -153,10 +171,6 @@ cp $SUPPORT_DIR/users.properties $SERVER_CONF_FUSE
 
 # TODO: add fuse projects to dir.
 #
-#echo Now going to build the projects...
-#echo
-#cd $PRJ_DIR
-#mvn clean install 
 
 echo
 echo "==========================================================================================="
