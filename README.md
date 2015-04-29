@@ -61,5 +61,14 @@ See the tagged releases for the following versions of the product:
 - v1.0 - JBoss BPM Suite 6.1 and JBoss Fuse 6.1 running travel agency demo with micro-services.
 
 
-![BPM Suite Process] (https://raw.githubusercontent.com/jbossdemocentral/brms-fuse-integration-demo/master/docs/demo-images/customer-evaluation.png)
+![Agency Process](https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/blob/master/docs/demo-images/agency-process.png?raw=true)
+
+![Calculate Process](https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/blob/master/docs/demo-images/calculate-process.png?raw=true)
+
+![Compensation](https://raw.githubusercontent.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/compensation-process.png?raw=true)
+
+![Special Trips UI Form](https://raw.githubusercontent.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/SpecialTripsUIform.png)
+
+![Started Process](https://raw.githubusercontent.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/started-process.png)
+
 ![BPM Suite BAM] (https://raw.githubusercontent.com/jbossdemocentral/brms-fuse-integration-demo/master/docs/demo-images/bam-dashboard.png)
