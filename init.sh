@@ -191,10 +191,6 @@ echo "  - updating the CustomWorkItemHandler.conf file to use the appropriate em
 echo
 cp -f $SUPPORT_DIR/CustomWorkItemHandlers.conf $SERVER_DIR/business-central.war/WEB-INF/classes/META-INF
 
-echo "  - enabling demo accounts logins in users.properties file..."
-echo
-cp $SUPPORT_DIR/users.properties $SERVER_CONF_FUSE
-
 # Optional: uncomment this to install mock data for BPM Suite.
 #
 #echo - setting up mock bpm dashboard data...
