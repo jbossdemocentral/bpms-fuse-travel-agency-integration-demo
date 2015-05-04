@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+
+    <persistence-unit name="travelagency" transaction-type="RESOURCE_LOCAL">
+       
+        <class>org.blogdemo.travelagency.hotelbookingservice.Booking</class>
+        <class>org.blogdemo.travelagency.hotelbookingservice.CancelBooking</class>
+		<properties>
+        	<property name="openjpa.ConnectionDriverName" value="org.h2.Driver" />
+      		<property name="openjpa.ConnectionURL" value="jdbc:h2:file:~/h2/travelagency;AUTO_SERVER=TRUE" />
+      		<property name="openjpa.ConnectionUserName" value="sa" />
+      		<property name="openjpa.ConnectionPassword" value="" />
+           	<property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='refresh')"/>
+            <property name="openjpa.Log" value="DefaultLevel=INFO, Runtime=INFO, Tool=INFO, SQL=TRACE"/>
+            <property name="openjpa.jdbc.DBDictionary" value="h2(useSchemaName=true)"/>
+        </properties>
+
+    </persistence-unit>
+</persistence>

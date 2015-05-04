@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.soap.jboss.com/AcmeDemo/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="AcmeDemoService" targetNamespace="http://service.soap.jboss.com/AcmeDemo/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://service.soap.jboss.com/AcmeDemo/" targetNamespace="http://service.soap.jboss.com/AcmeDemo/" version="1.0">
+<xs:element name="bookFlights">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="in" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="bookFlightsResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="out" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="cancelBooking">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="in" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="cancelBookingResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="out" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="listAvailablePlanes" type="tns:listAvailablePlanes"/>
+<xs:element name="listAvailablePlanesResponse" type="tns:listAvailablePlanesResponse"/>
+<xs:complexType name="listAvailablePlanes">
+<xs:sequence>
+<xs:element minOccurs="0" name="in" type="tns:flightRequest"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="flightRequest">
+<xs:sequence>
+<xs:element name="startCity" type="xs:string"/>
+<xs:element name="endCity" type="xs:string"/>
+<xs:element name="startDate" type="xs:string"/>
+<xs:element name="endDate" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="listAvailablePlanesResponse">
+<xs:sequence>
+<xs:element minOccurs="0" name="return" type="tns:flight"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="flight">
+<xs:sequence>
+<xs:element name="company" type="xs:string"/>
+<xs:element name="planeId" type="xs:int"/>
+<xs:element name="ratePerPerson" type="xs:decimal"/>
+<xs:element name="startCity" type="xs:string"/>
+<xs:element name="targetCity" type="xs:string"/>
+<xs:element name="travelDate" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="cancelBookingResponse">
+    <wsdl:part element="tns:cancelBookingResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="bookFlightsResponse">
+    <wsdl:part element="tns:bookFlightsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listAvailablePlanesResponse">
+    <wsdl:part element="tns:listAvailablePlanesResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="bookFlights">
+    <wsdl:part element="tns:bookFlights" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listAvailablePlanes">
+    <wsdl:part element="tns:listAvailablePlanes" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="cancelBooking">
+    <wsdl:part element="tns:cancelBooking" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="AcmeDemoInterface">
+    <wsdl:operation name="listAvailablePlanes">
+      <wsdl:input message="tns:listAvailablePlanes" name="listAvailablePlanes">
+    </wsdl:input>
+      <wsdl:output message="tns:listAvailablePlanesResponse" name="listAvailablePlanesResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="cancelBooking">
+      <wsdl:input message="tns:cancelBooking" name="cancelBooking">
+    </wsdl:input>
+      <wsdl:output message="tns:cancelBookingResponse" name="cancelBookingResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="bookFlights">
+      <wsdl:input message="tns:bookFlights" name="bookFlights">
+    </wsdl:input>
+      <wsdl:output message="tns:bookFlightsResponse" name="bookFlightsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="AcmeDemoServiceSoapBinding" type="tns:AcmeDemoInterface">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="listAvailablePlanes">
+      <soap:operation soapAction="http://service.soap.jboss.com/AcmeDemo/listAvailablePlanes" style="document"/>
+      <wsdl:input name="listAvailablePlanes">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="listAvailablePlanesResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="bookFlights">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="bookFlights">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="bookFlightsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="cancelBooking">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="cancelBooking">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="cancelBookingResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="AcmeDemoService">
+    <wsdl:port binding="tns:AcmeDemoServiceSoapBinding" name="AcmeDemoInterfaceImplPort">
+      <soap:address location="http://rhel7-workstation-npatel:8080/acme-flight-service-1.0/AcmeDemoInterface"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

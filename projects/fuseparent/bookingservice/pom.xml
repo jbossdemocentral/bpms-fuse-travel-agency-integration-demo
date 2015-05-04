@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+  	<groupId>org.blogdemo.travelagency</groupId>
+    <artifactId>parent</artifactId>
+	<version>1.0</version>
+  </parent>
+  <artifactId>bookingservice</artifactId>
+  <packaging>bundle</packaging>
+  
+
+  <name>Travel Agency Flights Booking service (JPA)</name>
+  <url>http://www.myorganization.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <fabric8.parentProfiles>feature-camel mq-client</fabric8.parentProfiles>                                                       
+	<fabric8.profile>demo-travelagency-bookingservice</fabric8.profile>
+	<fabric8.bundles>wrap:mvn:org.apache.openjpa/openjpa-all/2.3.0 wrap:mvn:com.h2database/h2/1.4.181</fabric8.bundles>
+	<fabric8.features>camel-jpa activemq-camel</fabric8.features>                
+  </properties>
+
+
+  <dependencies>
+  	<dependency>
+		<groupId>org.ow2.asm</groupId>
+		<artifactId>asm-all</artifactId>
+		<version>4.1</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-blueprint</artifactId>
+    </dependency>
+
+ 	<!-- Database persistence-->
+	<dependency>
+	    <groupId>org.apache.camel</groupId>
+	    <artifactId>camel-jpa</artifactId>
+	</dependency>
+		
+	<dependency>
+    	<groupId>org.apache.openjpa</groupId>
+        <artifactId>openjpa</artifactId>
+        <version>2.3.0</version>
+    </dependency>  
+       
+ 	<dependency>
+		<groupId>commons-dbcp</groupId>
+		<artifactId>commons-dbcp</artifactId>
+		<version>1.4</version>
+	</dependency>
+	<dependency>
+		<groupId>com.h2database</groupId>
+		<artifactId>h2</artifactId>
+		<version>1.4.181</version>
+	</dependency>
+	
+    <!--Messaging from and to AMQ -->
+	<dependency>
+		<groupId>org.apache.activemq</groupId>
+		<artifactId>activemq-camel</artifactId>
+	</dependency>
+  </dependencies>
+
+  <build>
+    <defaultGoal>install</defaultGoal>
+
+    <plugins>
+	    <plugin>
+        <groupId>org.apache.openjpa</groupId>
+        <artifactId>openjpa-maven-plugin</artifactId>
+        <version>2.2.0</version>
+        <configuration>
+            <includes>org/blogdemo/*.class</includes>
+            <excludes>com/jboss/soap/service/*/*.class</excludes>
+            <addDefaultConstructor>true</addDefaultConstructor>               
+            <enforcePropertyRestrictions>true</enforcePropertyRestrictions>
+        </configuration>
+        <executions>
+            <execution>
+                <id>enhancer</id>
+                <phase>process-classes</phase>
+                <goals>
+                    <goal>enhance</goal>
+                </goals>
+            </execution>
+        </executions>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.openjpa</groupId>
+                <artifactId>openjpa</artifactId>
+                <!-- set the version to be the same as the level in your runtime -->
+                <version>2.3.0</version>
+            </dependency>
+        </dependencies>
+    </plugin>    
+
+
+      <!-- to generate the MANIFEST-FILE of the bundle -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.3.7</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>travelagency</Bundle-SymbolicName>
+            <Private-Package>org.blogdemo.travelagency.*</Private-Package>
+            <Import-Package>
+            	org.h2,
+            	serp.util, 
+            	javax.persistence,
+            	*</Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+
+	
+      
+    </plugins>
+  </build>
+
+</project>

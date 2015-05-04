@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:camel="http://camel.apache.org/schema/blueprint"
+       xsi:schemaLocation="
+       http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+	
+	
+	<bean id="dataSourceTravelAgency" class="org.apache.commons.dbcp.BasicDataSource">
+    	<property name="driverClassName" value="org.h2.Driver"/>
+    	<property name="url" value="jdbc:h2:file:~/h2/travelagency;AUTO_SERVER=TRUE" />
+    	<property name="username" value="sa"/>
+  		<property name="password" value=""/>
+  	</bean>
+  	
+  	<bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
+	  	<property name="brokerURL" value="tcp://localhost:61616"/>
+	    <property name="userName" value="admin"/>
+	    <property name="password" value="admin"/>
+  	</bean>
+ 
+ 	<bean id="dataProcessor" class="org.blogdemo.travelagency.promtionflights.DataProcessor" />
+ 	<bean id="randomFlight" class="org.blogdemo.travelagency.promtionflights.RandomFlightBean" />
+ 
+
+  <camelContext trace="false" id="blueprintContext" xmlns="http://camel.apache.org/schema/blueprint">
+    <route id="promtionFlightRoute">
+        <from uri="activemq:queue:requestflight"/>
+        <log message="${body}"/>
+        <unmarshal>
+            <json unmarshalTypeName="java.util.HashMap" library="Jackson"/>
+        </unmarshal>
+       
+        <setHeader headerName="requestDeparture">
+            <simple>${body[startCity]}</simple>
+        </setHeader>
+        <setHeader headerName="requestDestination">
+            <simple>${body.[endCity]}</simple>
+        </setHeader>
+        <setHeader headerName="requestDepartureDate">
+        	<simple>${body[startDate]}</simple>
+        </setHeader>
+        <setHeader headerName="requestArrivalDate">
+        	<simple>${body[endDate]}</simple>
+        </setHeader>
+        <log message="requestDeparture: ${headers.requestDeparture} requestDestination: ${headers.requestDestination}"/>
+        <setBody>
+            <simple>SELECT * from avaliableflights where departure='${header.requestDeparture}' and destination='${header.requestDestination}'</simple>
+        </setBody>
+        <to uri="jdbc:dataSourceTravelAgency"/>
+        <bean method="processResultSet" ref="dataProcessor"/>
+        <bean ref="randomFlight"/>
+        <marshal>
+            <json library="Jackson"/>
+        </marshal>
+        <log message="${body}"/>
+    </route>
+</camelContext>
+
+</blueprint>

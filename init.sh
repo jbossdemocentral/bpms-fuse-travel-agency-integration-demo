@@ -2,21 +2,31 @@
 DEMO="JBoss BPM Suite & Fuse Travel Agency Integration Demo"
 AUTHORS="Christina Lin, Eric D. Schabell"
 PROJECT="git@github.com:jbossdemocentral/bpms-fuse-travel-agency-integration-demo.git"
+
+#BPM env
 JBOSS_HOME=./target/jboss-eap-6.4
-FUSE_HOME=./target/jboss-fuse-6.1.0.redhat-379
-FUSE_BIN=$FUSE_HOME/bin
 SERVER_DIR=$JBOSS_HOME/standalone/deployments/
 SERVER_CONF=$JBOSS_HOME/standalone/configuration/
-SERVER_CONF_FUSE=$FUSE_HOME/etc/
 SERVER_BIN=$JBOSS_HOME/bin
 SRC_DIR=./installs
 PRJ_DIR=./projects
 SUPPORT_DIR=./support
-FUSE=jboss-fuse-full-6.1.0.redhat-379.zip
 BPMS=jboss-bpmsuite-6.1.0.GA-installer.jar
 EAP=jboss-eap-6.4.0-installer.jar
 BPM_VERSION=6.1
-FUSE_VERSION=6.1.0
+
+#Fuse env 
+DEMO_HOME=./target
+FUSE=jboss-fuse-6.1.1.redhat-412
+FUSE_ZIP=jboss-fuse-full-6.1.1.redhat-412.zip
+FUSE_HOME=$DEMO_HOME/$FUSE
+FUSE_PROJECT=projects/fuseparent
+FUSE_SERVER_CONF=$FUSE_HOME/etc
+FUSE_SERVER_SYSTEM=$FUSE_HOME/system
+FUSE_SERVER_BIN=$FUSE_HOME/bin
+FUSE_VERSION=6.1.1
+
+
 
 # wipe screen.
 clear 
@@ -70,11 +80,11 @@ else
 	exit
 fi
 
-if [ -r $SRC_DIR/$FUSE ] || [ -L $SRC_DIR/$FUSE ]; then
-		echo Product sources FUSE are present...
+if [[ -r $SRC_DIR/$FUSE_ZIP || -L $SRC_DIR/$FUSE_ZIP ]]; then
+		echo $DEMO FUSE is present...
 		echo
 else
-		echo Need to download $FUSE package from the Customer Support Portal 
+		echo Need to download $FUSE_ZIP package from the Customer Support Portal 
 		echo and place it in the $SRC_DIR directory to proceed...
 		echo
 		exit
@@ -120,6 +130,28 @@ else
 	echo 
 	exit
 fi
+
+
+# Move the old JBoss instance, if it exists, to the OLD position.
+if [ -x $FUSE_HOME ]; then
+		echo "  - existing JBoss FUSE detected..."
+		echo
+		echo "  - moving existing JBoss FUSE aside..."
+		echo
+		rm -rf $FUSE_HOME.OLD
+		mv $FUSE_HOME $FUSE_HOME.OLD
+
+		# Unzip the JBoss instance.
+		echo Unpacking JBoss FUSE $VERSION
+		echo
+		unzip -q -d $DEMO_HOME $SRC_DIR/$FUSE_ZIP
+else
+		# Unzip the JBoss instance.
+		echo Unpacking new JBoss FUSE...
+		echo
+		unzip -q -d $DEMO_HOME $SRC_DIR/$FUSE_ZIP
+fi
+
 
 echo "  - enabling demo accounts role setup in application-roles.properties file..."
 echo
@@ -169,8 +201,88 @@ cp $SUPPORT_DIR/users.properties $SERVER_CONF_FUSE
 #cp $SUPPORT_DIR/1000_jbpm_demo_h2.sql $SERVER_DIR/dashbuilder.war/WEB-INF/etc/sql
 #echo
 
-# TODO: add fuse projects to dir.
-#
+#SETUP and INSTALL FUSE services
+echo "  - enabling demo accounts logins in users.properties file..."
+echo
+cp $SUPPORT_DIR/fuse/users.properties $FUSE_SERVER_CONF
+
+
+echo "  - copying a hacked org.apache.servicemix.bundles.spring-orm-3.2.9.RELEASE_1.jar file into syste,..."
+echo
+cp $SUPPORT_DIR/fuse/org.apache.servicemix.bundles.spring-orm-3.2.9.RELEASE_1.jar $FUSE_SERVER_SYSTEM/org/apache/servicemix/bundles/org.apache.servicemix.bundles.spring-orm/3.2.9.RELEASE_1/
+
+echo "  - create h2 database file..."
+echo
+
+if [ -x ~/h2 ]; then
+	rm -rf ~/h2/travelagency.mv.db
+else
+	mkdir ~/h2
+fi
+
+cp $SUPPORT_DIR/fuse/data/travelagency.mv.db ~/h2/
+
+
+echo "  - making sure 'FUSE' for server is executable..."
+echo
+chmod u+x $FUSE_HOME/bin/start
+
+
+
+echo "  - Start up Fuse in the background"
+echo
+sh $FUSE_SERVER_BIN/start
+
+
+
+echo "  - Create Fabric in Fuse"
+echo
+sh $FUSE_SERVER_BIN/client -r 3 -d 50 -u admin -p admin 'fabric:create --wait-for-provisioning'
+     
+
+sleep 60
+
+cd $FUSE_PROJECT     
+
+
+
+echo "Start compile and deploy 3 travel agency camel demo project to fuse"
+echo         
+mvn fabric8:deploy 
+
+cd ../..
+
+
+sleep 15 
+
+echo "Create containers and add profiles for Flight web service endpoint"
+echo         
+sh $FUSE_SERVER_BIN/client -r 2 -d 40 'container-create-child --profile demo-travelagency-webendpoint root wsflightcon'
+
+echo "Create containers and add profiles for Hotel web service endpoint"
+echo         
+sh $FUSE_SERVER_BIN/client -r 2 -d 40 'container-create-child --profile demo-travelagency-hotelwsendpoint root wshotelcon'
+
+echo "Create containers and add profiles for flight booking service"
+echo         
+sh $FUSE_SERVER_BIN/client -r 2 -d 40 'container-create-child --profile demo-travelagency-bookingservice root bookingflightcon'
+
+echo "Create containers and add profiles for hotel booking service"
+echo         
+sh $FUSE_SERVER_BIN/client -r 2 -d 40 'container-create-child --profile demo-travelagency-hotelbookingservice root bookinhotelgcon'
+
+echo "Create containers and add profiles flight promotion"
+echo
+sh $FUSE_SERVER_BIN/client -r 2 -d 40 'container-create-child --profile demo-travelagency-promotionflight root promoflightcon'
+
+echo "Create containers and add profiles hotel promotion"
+echo
+sh $FUSE_SERVER_BIN/client -r 2 -d 40 'container-create-child --profile demo-travelagency-promotionhotel root promohotelcon'
+
+echo "To stop the backgroud Fuse process, please go to bin and execute stop"
+echo
+
+
 
 echo
 echo "==========================================================================================="
@@ -187,30 +299,19 @@ echo "=  Deploying the camel route in JBoss Fuse as follows:                    
 echo "=                                                                                         ="
 echo "=    - add fabric server passwords for Maven Plugin to your ~/.m2/settings.xml            =" 
 echo "=      file the fabric server's user and password so that the maven plugin can            ="
-echo "=      login to the fabric. fabric8.upload.repoadminadmin                                 ="
+echo "=      login to the fabric. fabric8.upload.repo admin admin                               ="
 echo "=                                                                                         ="
-echo "=    - start the JBoss Fuse with:                                                         ="
+echo "=    - JBoss Fuse server is already started for you, view it in command line mode         ="
 echo "=                                                                                         ="
-echo "=        $FUSE_BIN/fuse                                    ="
+echo "=        $FUSE_SERVER_BIN/client                                                                 ="
 echo "=                                                                                         ="
-echo "=    - start up fabric in fuse console: fabric:create --wait-for-provisioning             ="
+echo "=    - To stop Fuse server running                                                        ="
 echo "=                                                                                         ="
-echo "=    - run 'mvn fabric8:deploy' from projects/brms-fuse-integration/simpleRoute           ="
+echo "=        $FUSE_SERVER_BIN/stop                                                                 ="
 echo "=                                                                                         ="
 echo "=    - login to Fuse management console at:                                               ="
 echo "=                                                                                         ="
 echo "=        http://localhost:8181    (u:admin/p:admin)                                       ="
-echo "=                                                                                         ="
-echo "=    - connect to root container with login presented by console  (u:admin/p:admin)       ="
-echo "=                                                                                         ="
-echo "=    - create container name c1 and add BPMSuiteFuse profile (see readme for screenshot)  ="
-echo "=                                                                                         ="
-echo "=    - open c1 container to view route under 'DIAGRAM' tab                                ="
-echo "=                                                                                         ="
-echo "=    - trigger camel route by placing support/date/message.xml file into the              ="
-echo "=      following folder:                                                                  ="
-echo "=                                                                                         ="
-echo "=        $FUSE_HOME/instances/c1/src/data                       =" 
 echo "=                                                                                         ="
 echo "=                                                                                         ="
 echo "=   $DEMO Setup Complete.                 ="

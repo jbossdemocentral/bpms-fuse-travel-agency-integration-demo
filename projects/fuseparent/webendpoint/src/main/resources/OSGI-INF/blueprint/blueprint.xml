@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:camel="http://camel.apache.org/schema/blueprint"
+       xmlns:cxf="http://camel.apache.org/schema/blueprint/cxf"       
+       xsi:schemaLocation="
+       http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+       http://camel.apache.org/schema/blueprint/cxf http://camel.apache.org/schema/blueprint/cxf/camel-cxf.xsd
+       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+
+  	
+  		<bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        	<property name="brokerURL" value="tcp://localhost:61616"/>
+	    	<property name="userName" value="admin"/>
+	    	<property name="password" value="admin"/>
+    	</bean>
+
+    	<bean id="pooledConnectionFactory"   class="org.apache.activemq.pool.PooledConnectionFactory"  init-method="start" destroy-method="stop">
+        	<property name="maxConnections" value="2" />
+        	<property name="connectionFactory" ref="jmsConnectionFactory" />
+    	</bean>
+
+    	<bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration">
+        	<property name="connectionFactory" ref="pooledConnectionFactory"/>
+        	<property name="concurrentConsumers" value="2"/>
+    	</bean>
+
+	    <bean id="activemq"  class="org.apache.activemq.camel.component.ActiveMQComponent">
+	        <property name="configuration" ref="jmsConfig"/>
+	    </bean>
+	
+  <bean id="flightBean" class="org.blogdemo.travelagency.ListFlightBean" />
+  <cxf:cxfEndpoint id="flightEndpoint"
+                   address="/acme-flight-service-2.0/"
+                   serviceClass="com.jboss.soap.service.acmedemo.AcmeDemoInterface"
+                   wsdlURL="wsdl/AcmeDemoInterface.wsdl"/>
+  
+  <camelContext trace="false" id="blueprintContext" xmlns="http://camel.apache.org/schema/blueprint">
+    <route id="cxfwsRoute">
+        <from uri="cxf:bean:flightEndpoint"/>
+        <log message="${header.operationName}"/>
+        <recipientList>
+            <simple>direct:${header.operationName}</simple>
+        </recipientList>
+    </route>
+    <route id="bookFlightsRoute">
+        <from uri="direct:bookFlights"/>
+        <log message="bookFlights Body:[${body}]"/>
+        <convertBodyTo type="java.lang.String" />
+        <to uri="activemq:queue:booking" pattern="InOut"/>
+        <log message="return bookFlights Body:[${body}]"/>
+    </route>
+    <route id="cancelBookingRoute">
+        <from uri="direct:cancelBooking"/>
+        <log message="cancelBooking Body:[${body}]"/>
+        <convertBodyTo type="java.lang.String" />
+        <to uri="activemq:queue:cancelbooking" pattern="InOut"/>
+        <convertBodyTo type="java.lang.Integer"/>
+        <log message="return cancelBookFlights Body:[${body}]"/>
+    </route>
+    
+    <route id="listAvailablePlanesRoute">
+        <from uri="direct:listAvailablePlanes"/>
+        <convertBodyTo type="com.jboss.soap.service.acmedemo.FlightRequest"/>
+        <log message="listAvailable Body:[${body.startCity},${body.endCity},${body.startDate},${body.endDate}]"/>
+        <marshal>
+            <json library="Jackson"/>
+        </marshal>
+        <to uri="activemq:queue:requestflight" pattern="InOut"/>
+        <unmarshal>
+            <json unmarshalTypeName="java.util.HashMap" library="Jackson"/>
+        </unmarshal>
+        <log message="Body:[${body}]"/>
+        <bean method="getFlights" ref="flightBean"/>
+    </route>
+</camelContext>
+
+</blueprint>

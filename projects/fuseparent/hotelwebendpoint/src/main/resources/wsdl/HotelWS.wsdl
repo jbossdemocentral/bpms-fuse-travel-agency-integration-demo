@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.service.acme/HotelWS/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="HotelWS" targetNamespace="http://soap.service.acme/HotelWS/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://soap.service.acme/HotelWS/" targetNamespace="http://soap.service.acme/HotelWS/" version="1.0">
+<xs:element name="bookHotel">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="in" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="bookHotelResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="out" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="cancelBooking">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="in" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="cancelBookingResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="out" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="getAvailableHotel" type="tns:getAvailableHotel"/>
+<xs:element name="getAvailableHotelResponse" type="tns:getAvailableHotelResponse"/>
+<xs:complexType name="getAvailableHotel">
+<xs:sequence>
+<xs:element minOccurs="0" name="in" type="tns:hotelRequest"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="hotelRequest">
+<xs:sequence>
+<xs:element name="targetCity" type="xs:string"/>
+<xs:element name="startDate" type="xs:string"/>
+<xs:element name="endDate" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getAvailableHotelResponse">
+<xs:sequence>
+<xs:element minOccurs="0" name="return" type="tns:resort"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="resort">
+<xs:sequence>
+<xs:element minOccurs="0" name="hotelId" type="xs:int"/>
+<xs:element name="hotelName" type="xs:string"/>
+<xs:element name="ratePerPerson" type="xs:double"/>
+<xs:element name="hotelCity" type="xs:string"/>
+<xs:element name="availableFrom" type="xs:string"/>
+<xs:element name="availableTo" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="bookHotel">
+    <wsdl:part element="tns:bookHotel" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="bookHotelResponse">
+    <wsdl:part element="tns:bookHotelResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="cancelBookingResponse">
+    <wsdl:part element="tns:cancelBookingResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="cancelBooking">
+    <wsdl:part element="tns:cancelBooking" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getAvailableHotel">
+    <wsdl:part element="tns:getAvailableHotel" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getAvailableHotelResponse">
+    <wsdl:part element="tns:getAvailableHotelResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="HotelWS">
+    <wsdl:operation name="bookHotel">
+      <wsdl:input message="tns:bookHotel" name="bookHotel">
+    </wsdl:input>
+      <wsdl:output message="tns:bookHotelResponse" name="bookHotelResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="cancelBooking">
+      <wsdl:input message="tns:cancelBooking" name="cancelBooking">
+    </wsdl:input>
+      <wsdl:output message="tns:cancelBookingResponse" name="cancelBookingResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getAvailableHotel">
+      <wsdl:input message="tns:getAvailableHotel" name="getAvailableHotel">
+    </wsdl:input>
+      <wsdl:output message="tns:getAvailableHotelResponse" name="getAvailableHotelResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="HotelWSSoapBinding" type="tns:HotelWS">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="bookHotel">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="bookHotel">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="bookHotelResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="cancelBooking">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="cancelBooking">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="cancelBookingResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getAvailableHotel">
+      <soap:operation soapAction="http://soap.service.acme/HotelWS/getAvailableHotel" style="document"/>
+      <wsdl:input name="getAvailableHotel">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getAvailableHotelResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="HotelWS">
+    <wsdl:port binding="tns:HotelWSSoapBinding" name="HotelWSImplPort">
+      <soap:address location="http://rhel7-workstation-npatel:8080/acme-hotel-service-1.0/HotelWS"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

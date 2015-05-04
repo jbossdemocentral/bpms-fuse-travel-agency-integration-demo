@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:camel="http://camel.apache.org/schema/blueprint"
+       xsi:schemaLocation="
+       http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+
+  	<bean id="dataSourceTravelAgency" class="org.apache.commons.dbcp.BasicDataSource">
+    	<property name="driverClassName" value="org.h2.Driver"/>
+    	<property name="url" value="jdbc:h2:file:~/h2/travelagency;AUTO_SERVER=TRUE" />
+    	<property name="username" value="sa"/>
+  		<property name="password" value=""/>
+  	</bean>
+  	
+  	<bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
+	  	<property name="brokerURL" value="tcp://localhost:61616"/>
+	    <property name="userName" value="admin"/>
+	    <property name="password" value="admin"/>
+  	</bean>
+  
+  	
+ 	<bean id="dataProcessor" class="org.blogdemo.travelagency.promotionhotel.ResortDataConvertor" />
+ 	<bean id="randomHotel" class="org.blogdemo.travelagency.promotionhotel.RandomHotelBean" />
+ 	
+  <camelContext trace="false" id="blueprintContext" xmlns="http://camel.apache.org/schema/blueprint">
+    <route id="promtionHotelRoute">
+        <from uri="activemq:queue:requestHotel"/>
+        <log message="${body}"/>
+        <unmarshal>
+            <json unmarshalTypeName="java.util.HashMap" library="Jackson"/>
+        </unmarshal>
+        <setHeader headerName="requestCity">
+            <simple>${body[targetCity]}</simple>
+        </setHeader>
+        <setHeader headerName="requestStartDate">
+            <simple>${body[startDate]}</simple>
+        </setHeader>
+        <setHeader headerName="requestEndDate">
+            <simple>${body[endDate]}</simple>
+        </setHeader>
+        <log message="requestCity ${headers.requestCity} requestStartDate ${headers.requestStartDate}"/>
+        <setBody>
+            <simple>SELECT * from avaliablehotels where hotelcity='${header.requestCity}'</simple>
+        </setBody>
+        <to uri="jdbc:dataSourceTravelAgency"/>
+        <bean method="processResultSet" ref="dataProcessor"/>
+        <bean ref="randomHotel"/>
+        <marshal>
+            <json library="Jackson"/>
+        </marshal>
+        <log message="${body}"/>
+    </route>
+</camelContext>
+
+</blueprint>

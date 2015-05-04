@@ -1,0 +1,47 @@
+
+drop table avaliableflights;
+Create table avaliableflights(
+flightid int not null,
+airline varchar(255) not null,
+departure varchar(255) not null,
+destination varchar(255) not null,
+departuretime timestamp  not null,
+arrivaltime timestamp  not null,
+flightclass varchar(255) not null,
+price DECIMAL(20, 2) not null
+);
+
+Insert into avaliableflights VALUES (1001,'Delta','Boston','London','2015-5-20 18:25:00','2015-5-21 11:50:00','E',1100.00);
+Insert into avaliableflights VALUES (1002,'KLM','Boston','London','2015-5-19 21:25:00','2015-5-20 9:50:00','E',1200.00);
+Insert into avaliableflights VALUES (1003,'British Airway','Boston','London','2015-5-18 20:35:00','2015-5-19 15:10:00','E',1250.00);
+Insert into avaliableflights VALUES (1004,'Icelandair','London','San Fransico','2015-5-20 06:30:00','2015-5-20 12:45:00','E',999.00);
+Insert into avaliableflights VALUES (1005,'Air Canada','London','Toronto','2015-5-20 12:00:00','2015-5-20 15:10:00','E',835.00);
+Insert into avaliableflights VALUES (1006,'British Airway','London','Washinton','2015-5-20 07:30:00','2015-5-20 09:35:00','E',1300.00);
+Insert into avaliableflights VALUES (1007,'Eva Air','London','Taipei','2015-5-20 21:20:00','2015-5-21 17:15:00','E',900.00);
+Insert into avaliableflights VALUES (1008,'Japan airlines','London','Tokyo','2015-5-20 19:35:00','2015-5-21 13:45:00','E',950.00);
+
+select * from avaliableflights;
+
+create table booking(
+ bookingid varchar(255) not null,
+ recieveDate timestamp  not null
+);
+
+select * from booking;
+
+create table cancelbooking(
+ bookingid varchar(255) not null,
+ recieveDate timestamp  not null
+);
+
+select * from cancelbooking;
+
+
+SELECT * from avaliableflights where departure='London' and destination='Taipei'             
+and departuretime>='' and arrivaltime<='2015-12-01 00:00:00'
+
+
+
+
+
+

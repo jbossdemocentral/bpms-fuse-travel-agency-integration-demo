@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:camel="http://camel.apache.org/schema/blueprint"
+       xsi:schemaLocation="
+       http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+  
+  	<bean id="jpa" class="org.apache.camel.component.jpa.JpaComponent">
+       <property name="entityManagerFactory" ref="entityManagerFactory" />
+       <property name="transactionManager" ref="jpaTxManager"/>
+    </bean>
+    
+    <bean id="jpaTxManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+    
+    <bean id="entityManagerFactoryBean" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean" init-method="afterPropertiesSet">   
+       <property name="persistenceUnitName" value="travelagency"/>
+        <property name="jpaDialect">
+        	<bean class="org.springframework.orm.jpa.vendor.OpenJpaDialect" />
+    	</property>
+   </bean>
+   
+   <bean id="entityManagerFactory" factory-ref="entityManagerFactoryBean" factory-method="getObject" />
+   
+   <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
+	  	<property name="brokerURL" value="tcp://localhost:61616"/>
+	    <property name="userName" value="admin"/>
+	    <property name="password" value="admin"/>
+   </bean>
+  <bean id="bookingService" class="org.blogdemo.travelagency.hotelbookingservice.BookingService" />
+  <bean id="params" class="java.util.HashMap" />
+  <camelContext trace="false" xmlns="http://camel.apache.org/schema/blueprint">
+    <route id="hotelBookingRoute">
+        <from uri="activemq:queue:hotelbooking"/>
+        <bean method="createBooking" ref="bookingService"/>
+        <to uri="jpa://org.blogdemo.travelagency.hotelbookingservice.Booking?consumeDelete=false"/>
+        <log message="${body}"/>
+        <setBody>
+            <simple>${body.bookingid}</simple>
+        </setBody>
+    </route>
+    <route id="cancelHotelBookingRoute">
+        <from uri="activemq:queue:cancelhotelbooking"/>
+        <bean method="put('bookingid',${body})" ref="params"/>
+        <pollEnrich timeout="2000" uri="jpa://org.blogdemo.travelagency.hotelbookingservice.Booking?consumeDelete=false&amp;consumer.namedQuery=queryHotelBookingById&amp;consumer.parameters=#params"/>
+        <log message="try:[${body}]"/>
+        <choice>
+            <when>
+                <simple>${body} != null</simple>
+                <bean method="createCancelBooking(${body.bookingid})" ref="bookingService"/>
+                <to uri="jpa://org.blogdemo.travelagency.hotelbookingservice.CancelBooking?consumeDelete=false"/>
+                <setBody>
+                    <simple>bean:bookingService?method=cancelCharge</simple>
+                </setBody>
+            </when>
+            <otherwise>
+                <setBody>
+                    <constant>0</constant>
+                </setBody>
+            </otherwise>
+        </choice>
+    </route>
+</camelContext>
+
+</blueprint>
