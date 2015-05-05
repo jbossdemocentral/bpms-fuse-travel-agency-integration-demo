@@ -233,13 +233,20 @@ sh $FUSE_SERVER_BIN/start
 
 echo "  - Create Fabric in Fuse"
 echo
-sh $FUSE_SERVER_BIN/client -r 3 -d 50 -u admin -p admin 'fabric:create --wait-for-provisioning'
+sh $FUSE_SERVER_BIN/client -r 3 -d 10 -u admin -p admin 'fabric:create --wait-for-provisioning'
      
 
-sleep 60
+#===Test if the fabric is ready=====================================
+echo Testing fabric,retry when not ready
+while true; do
+    if [ $(sh $FUSE_SERVER_BIN/client 'fabric:status'| grep "100%" | wc -l ) -ge 3 ]; then
+        break
+    fi
+    sleep 2
+done
+#===================================================================
 
 cd $FUSE_PROJECT     
-
 
 
 echo "Start compile and deploy 3 travel agency camel demo project to fuse"
@@ -248,35 +255,65 @@ mvn fabric8:deploy
 
 cd ../..
 
+#===Test if the fabric is ready=====================================
+echo Testing profiles,retry when not ready
+while true; do
+    if [ $(sh $FUSE_SERVER_BIN/client 'profile-list'| grep "demo-travelagency" | wc -l ) -ge 6 ]; then
+        break
+    fi
+    sleep 2
+done
+#===================================================================
 
-sleep 15 
+
+
 
 echo "Create containers and add profiles for Flight web service endpoint"
 echo         
-sh $FUSE_SERVER_BIN/client -r 2 -d 40 'container-create-child --profile demo-travelagency-webendpoint root wsflightcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-webendpoint root wsflightcon'
 
 echo "Create containers and add profiles for Hotel web service endpoint"
 echo         
-sh $FUSE_SERVER_BIN/client -r 2 -d 40 'container-create-child --profile demo-travelagency-hotelwsendpoint root wshotelcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-hotelwsendpoint root wshotelcon'
 
 echo "Create containers and add profiles for flight booking service"
 echo         
-sh $FUSE_SERVER_BIN/client -r 2 -d 40 'container-create-child --profile demo-travelagency-bookingservice root bookingflightcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-bookingservice root bookingflightcon'
 
 echo "Create containers and add profiles for hotel booking service"
 echo         
-sh $FUSE_SERVER_BIN/client -r 2 -d 40 'container-create-child --profile demo-travelagency-hotelbookingservice root bookinhotelgcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-hotelbookingservice root bookinhotelgcon'
 
 echo "Create containers and add profiles flight promotion"
 echo
-sh $FUSE_SERVER_BIN/client -r 2 -d 40 'container-create-child --profile demo-travelagency-promotionflight root promoflightcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-promotionflight root promoflightcon'
 
 echo "Create containers and add profiles hotel promotion"
 echo
-sh $FUSE_SERVER_BIN/client -r 2 -d 40 'container-create-child --profile demo-travelagency-promotionhotel root promohotelcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-promotionhotel root promohotelcon'
 
-echo "To stop the backgroud Fuse process, please go to bin and execute stop"
-echo
+
+#===Test if the fabric is ready=====================================
+echo Testing containers startd,retry when not ready
+while true; do
+    if [ $(sh $FUSE_SERVER_BIN/client 'container-list'| grep "success" | wc -l ) -ge 7 ]; then
+        break
+    fi
+    sleep 2
+done
+#===================================================================
+
+
+echo "Stop all containers"
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop wsflightcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop wshotelcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop bookingflightcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop bookinhotelgcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop promoflightcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop promohotelcon'
+
+echo "Stoping Root Container (Fabric)"
+sh $FUSE_SERVER_BIN/stop
 
 
 
@@ -291,24 +328,21 @@ echo "=    - login, build and deploy JBoss BPM Suite process project at:        
 echo "=                                                                                         ="
 echo "=        http://localhost:8080/business-central (u:erics/p:bpmsuite1!)                    ="
 echo "=                                                                                         ="
-echo "=  Deploying the camel route in JBoss Fuse as follows:                                    ="
+echo "=  Starting the camel route in JBoss Fuse as follows:                                     ="
 echo "=                                                                                         ="
 echo "=    - add fabric server passwords for Maven Plugin to your ~/.m2/settings.xml            =" 
 echo "=      file the fabric server's user and password so that the maven plugin can            ="
 echo "=      login to the fabric. fabric8.upload.repo admin admin                               ="
 echo "=                                                                                         ="
-echo "=    - JBoss Fuse server is already started for you, view it in command line mode         ="
+echo "=    - Start JBoss Fuse server with                                                       ="
 echo "=                                                                                         ="
-echo "=        $FUSE_SERVER_BIN/client                                  ="
-echo "=                                                                                         ="
-echo "=    - To stop Fuse server running                                                        ="
-echo "=                                                                                         ="
-echo "=        $FUSE_SERVER_BIN/stop                                    ="
+echo "=        $FUSE_SERVER_BIN/fuse                                   ="
 echo "=                                                                                         ="
 echo "=    - login to Fuse management console at:                                               ="
 echo "=                                                                                         ="
 echo "=        http://localhost:8181    (u:admin/p:admin)                                       ="
 echo "=                                                                                         ="
+echo "=    - Go to Runtime Tab, start all 6 containers                                          ="
 echo "=                                                                                         ="
 echo "=   $DEMO Setup Complete.                 ="
 echo "==========================================================================================="
