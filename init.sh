@@ -203,7 +203,7 @@ echo
 cp $SUPPORT_DIR/fuse/users.properties $FUSE_SERVER_CONF
 
 
-echo "  - copying a hacked org.apache.servicemix.bundles.spring-orm-3.2.9.RELEASE_1.jar file into syste,..."
+echo "  - copying a modified org.apache.servicemix.bundles.spring-orm-3.2.9.RELEASE_1.jar file into server..."
 echo
 cp $SUPPORT_DIR/fuse/org.apache.servicemix.bundles.spring-orm-3.2.9.RELEASE_1.jar $FUSE_SERVER_SYSTEM/org/apache/servicemix/bundles/org.apache.servicemix.bundles.spring-orm/3.2.9.RELEASE_1/
 
