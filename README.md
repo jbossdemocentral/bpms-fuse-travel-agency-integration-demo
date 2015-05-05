@@ -48,7 +48,7 @@ Released versions
 -----------------
 See the tagged releases for the following versions of the product:
 
-- v1.0 - JBoss BPM Suite 6.1 and JBoss Fuse 6.1 running travel agency demo with micro-services.
+- v1.0 - JBoss BPM Suite 6.1 and JBoss Fuse 6.1.1 with micro-service migration from traditional web services for Travel Agency project.
 
 
 ![Agency Process](https://github.com/eschabell/bpms-fuse-travel-agency-integration-demo/blob/master/docs/demo-images/agency-process.png?raw=true)
