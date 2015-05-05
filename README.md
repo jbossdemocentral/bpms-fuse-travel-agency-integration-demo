@@ -1,6 +1,8 @@
 JBoss BPM Suite & JBoss Fuse Travel Agency Integration Demo
 ===========================================================
-Demo based on JBoss BPM Suite and JBoss Fuse products to highlight migration to micro-services.
+Demo based on JBoss BPM Suite and JBoss Fuse products to highlight migration to micro-services. The installation
+will take some time as the Fuse containers are provisioned automatically for you during the installation phase
+so that the micro-services only need to be started before running the JBoss Travel Agency process.
 
 
 Install on your machine
