@@ -1,0 +1,18 @@
+{
+  "name":"JBoss BPM Suite & JBoss Fuse Travel Agency Integration Demo",
+  "summary":"Demo based on JBoss BPM Suite and JBoss Fuse products that highlights the JBoss Travel Agency project migration from traditional web services to micro-services. Install options - local.",
+  "author":"Christina Lin, Eric D. Schabell",
+  "categories":["bpms","fuse","multi"],
+  "level":"Easy Peasy",
+  "published":true,
+  "prerequisites":"Java 1.7, Java 1.8, Maven",
+  "targetProduct":"JBoss BPM Suite and JBoss Fuse",
+  "productVersion":"JBoss BPM Suite 6.1, JBoss Fuse 6.1.1",
+  "technologies": ["JBoss BPM Suite","JBoss Fuse"],
+  "links": [ 
+    {
+      "name":"Code",
+      "url":"https://github.com/jbossdemocentral/brms-fuse-travel-agency-integration-demo"
+    }
+  ]
+}
