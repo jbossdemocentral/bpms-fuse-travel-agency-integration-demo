@@ -33,10 +33,10 @@ Install on your machine
 7. Login to Fuse management console at:  http://localhost:8181    (u:admin/p:admin).
 
 8. Under Runtime tab, you will see 6 containers, select and start them all.  
-![Fuse Under Runtime](https://github.com/eschabell/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse01-underruntime.png?raw=true)
+![Fuse Under Runtime](https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse01-underruntime.png?raw=true)
 
 9. Check if web services are avaiable under APIs tab.
-![Fuse WS APIs](https://github.com/eschabell/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse02-underapis.png?raw=true)
+![Fuse WS APIs](https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse02-underapis.png?raw=true)
 
 10. Enjoy the demo!
 
@@ -128,27 +128,28 @@ See the tagged releases for the following versions of the product:
 
 - v1.0 - JBoss BPM Suite 6.1 and JBoss Fuse 6.1.1 with micro-service migration from traditional web services for Travel Agency project.
 
+![Digital Sign](https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/blob/master/docs/demo-images/digital-sign.jpg?raw=true)
 
-![Agency Process](https://github.com/eschabell/bpms-fuse-travel-agency-integration-demo/blob/master/docs/demo-images/agency-process.png?raw=true)
+![Agency Process](https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/blob/master/docs/demo-images/agency-process.png?raw=true)
 
-![Calculate Process](https://github.com/eschabell/bpms-fuse-travel-agency-integration-demo/blob/master/docs/demo-images/calculate-process.png?raw=true)
+![Calculate Process](https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/blob/master/docs/demo-images/calculate-process.png?raw=true)
 
-![Compensation](https://raw.githubusercontent.com/eschabell/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/compensation-process.png?raw=true)
+![Compensation](https://raw.githubusercontent.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/compensation-process.png?raw=true)
 
-![Special Trips UI Form](https://raw.githubusercontent.com/eschabell/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/SpecialTripsUIform.png)
+![Special Trips UI Form](https://raw.githubusercontent.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/SpecialTripsUIform.png)
 
-![Started Process](https://raw.githubusercontent.com/eschabell/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/started-process.png?raw=true)
+![Started Process](https://raw.githubusercontent.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/started-process.png?raw=true)
 
-![BPM Suite BAM](https://raw.githubusercontent.com/eschabell/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/mock-bpm-data.png?raw=true)
+![BPM Suite BAM](https://raw.githubusercontent.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/mock-bpm-data.png?raw=true)
 
-![Fuse Under MQ Tab](https://github.com/eschabell/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse03-unsermq.png?raw=true)
+![Fuse Under MQ Tab](https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse03-unsermq.png?raw=true)
 
-![Fuse Message Broker Statistics](https://github.com/eschabell/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse04-msgbroker.png?raw=true)
+![Fuse Message Broker Statistics](https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse04-msgbroker.png?raw=true)
 
-![Fuse Booking Route](https://github.com/eschabell/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse05-bookingroute.png?raw=true)
+![Fuse Booking Route](https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse05-bookingroute.png?raw=true)
 
-![Fuse Cancel Booking Route](https://github.com/eschabell/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse06-cancelbookingroute.png?raw=true)
+![Fuse Cancel Booking Route](https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse06-cancelbookingroute.png?raw=true)
 
-![Fuse Promotion FLight Route](https://github.com/eschabell/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse07-promotionflightroute.png?raw=true)
+![Fuse Promotion FLight Route](https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse07-promotionflightroute.png?raw=true)
 
-![Fuse Web Service Route](https://github.com/eschabell/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse08-wsroute.png?raw=true)
+![Fuse Web Service Route](https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse08-wsroute.png?raw=true)
