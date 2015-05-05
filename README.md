@@ -7,7 +7,7 @@ so that the micro-services only need to be started before running the JBoss Trav
 
 Install on your machine
 -----------------------
-1. [Download and unzip.](https://github.com/jbossdemocentral/brms-fuse-integration-demo/archive/master.zip). If running on Windows(No FUSE), it is recommended the project be extracted to a location near the root drive path due to limitations of length of file/path names.
+1. [Download and unzip.](https://github.com/jbossdemocentral/brms-fuse-integration-demo/archive/master.zip) 
 
 2. Add products to installs directory.
 
