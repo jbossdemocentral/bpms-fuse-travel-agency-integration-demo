@@ -5,7 +5,7 @@ Demo based on JBoss BPM Suite and JBoss Fuse products to highlight migration to 
 
 Install on your machine
 -----------------------
-1. [Download and unzip.](https://github.com/jbossdemocentral/brms-fuse-integration-demo/archive/master.zip). If running on Windows, it is recommended the project be extracted to a location near the root drive path due to limitations of length of file/path names.
+1. [Download and unzip.](https://github.com/jbossdemocentral/brms-fuse-integration-demo/archive/master.zip). If running on Windows(No FUSE), it is recommended the project be extracted to a location near the root drive path due to limitations of length of file/path names.
 
 2. Add products to installs directory.
 
@@ -26,27 +26,17 @@ Install on your machine
      </servers> 
      ```
 
-6. Start Fuse Server and start up fabric in fuse console: 
+6. Start Fuse Server, by running 'fuse' or 'fuse.bat': 
 
-     ```
-     fabric:create --wait-for-provisioning 
-     ```
+7. Login to Fuse management console at:  http://localhost:8181    (u:admin/p:admin).
 
-7. Deploy simple route from projects/brms-fuse-integration/simpleRoute:
+8. Under Runtime tab, you will see 6 containers, select and start them all.  
+![Fuse Under Runtime](https://github.com/eschabell/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse01-underruntime.png?raw=true)
 
-     ```
-     mvn fabric8:deploy
-     ```
+9. Check if web services are avaiable under APIs tab.
+![Fuse WS APIs](https://github.com/eschabell/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse02-underapis.png?raw=true)
 
-8. Login to Fuse management console at:  http://localhost:8181    (u:admin/p:admin).
-
-9. Connect to root container with login presented by console  (u:admin/p:admin)   
-
-10. Create container name c1 and add bpmsuitefuse profile (see screenshot below)
-
-11. Trigger camel route by placing support/data/message.xml files into target/jboss-fuse-6.1.0.redhat-379/instances/c1/src/data folder (see screenshot below)
-
-12. Enjoy the demo!
+10. Enjoy the demo!
 
 
 Supporting Articles
@@ -69,6 +59,18 @@ See the tagged releases for the following versions of the product:
 
 ![Special Trips UI Form](https://raw.githubusercontent.com/eschabell/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/SpecialTripsUIform.png)
 
-![Started Process](https://raw.githubusercontent.com/eschabell/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/started-process.png)
+![Started Process](https://raw.githubusercontent.com/eschabell/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/started-process.png?raw=true)
 
-![BPM Suite BAM](https://raw.githubusercontent.com/eschabell/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/mock-bpm-data.png)
+![BPM Suite BAM](https://raw.githubusercontent.com/eschabell/bpms-fuse-travel-agency-integration-demo/master/docs/demo-images/mock-bpm-data.png?raw=true)
+
+![Fuse Under MQ Tab](https://github.com/eschabell/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse03-unsermq.png?raw=true)
+
+![Fuse Message Broker Statistics](https://github.com/eschabell/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse04-msgbroker.png?raw=true)
+
+![Fuse Booking Route](https://github.com/eschabell/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse05-bookingroute.png?raw=true)
+
+![Fuse Cancel Booking Route](https://github.com/eschabell/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse06-cancelbookingroute.png?raw=true)
+
+![Fuse Promotion FLight Route](https://github.com/eschabell/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse07-promotionflightroute.png?raw=true)
+
+![Fuse Web Service Route](https://github.com/eschabell/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse08-wsroute.png?raw=true)
