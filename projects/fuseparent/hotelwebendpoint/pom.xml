@@ -21,7 +21,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <fabric8.parentProfiles>feature-camel mq-client</fabric8.parentProfiles>
 	<fabric8.profile>demo-travelagency-hotelwsendpoint</fabric8.profile>
-	<fabric8.features>camel-cxf activemq-camel camel-jackson</fabric8.features>                   
+	<fabric8.features>camel-cxf activemq-camel camel-jackson fabric-cxf-registry fabric-cxf fabric-zookeeper fabric-groups</fabric8.features>                   
   </properties>
 
   <dependencies>
@@ -34,7 +34,6 @@
       <artifactId>camel-blueprint</artifactId>
     </dependency>
 
-	
 	<!-- For Web Service with CXF -->
 	 <dependency>
       <groupId>org.apache.camel</groupId>
@@ -57,7 +56,6 @@
 	    <artifactId>cxf-rt-transports-http-jetty</artifactId>
 	</dependency>
 	
-	<!-- Data transformation -->
 	<dependency>
 	  <groupId>org.apache.camel</groupId>
 	  <artifactId>camel-jackson</artifactId>
@@ -72,28 +70,6 @@
 	  <groupId>org.apache.camel</groupId>
 	  <artifactId>camel-jms</artifactId>
 	</dependency>
-	
-	
-    <!-- logging -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>jcl-over-slf4j</artifactId>
-      <version>1.7.5</version>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-    </dependency>
-
-   
   </dependencies>
 
   <build>

@@ -134,9 +134,5 @@
       </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
-  <wsdl:service name="HotelWS">
-    <wsdl:port binding="tns:HotelWSSoapBinding" name="HotelWSImplPort">
-      <soap:address location="http://rhel7-workstation-npatel:8080/acme-hotel-service-1.0/HotelWS"/>
-    </wsdl:port>
-  </wsdl:service>
+
 </wsdl:definitions>

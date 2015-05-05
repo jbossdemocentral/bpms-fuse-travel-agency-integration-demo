@@ -31,7 +31,7 @@
 	
   <bean id="flightBean" class="org.blogdemo.travelagency.ListFlightBean" />
   <cxf:cxfEndpoint id="flightEndpoint"
-                   address="/acme-flight-service-2.0/"
+                   address="/acme-flight-service-2.0"
                    serviceClass="com.jboss.soap.service.acmedemo.AcmeDemoInterface"
                    wsdlURL="wsdl/AcmeDemoInterface.wsdl"/>
   
@@ -40,18 +40,18 @@
         <from uri="cxf:bean:flightEndpoint"/>
         <log message="${header.operationName}"/>
         <recipientList>
-            <simple>direct:${header.operationName}</simple>
+            <simple>direct://${header.operationName}</simple>
         </recipientList>
     </route>
     <route id="bookFlightsRoute">
-        <from uri="direct:bookFlights"/>
+        <from uri="direct://bookFlights"/>
         <log message="bookFlights Body:[${body}]"/>
         <convertBodyTo type="java.lang.String" />
         <to uri="activemq:queue:booking" pattern="InOut"/>
         <log message="return bookFlights Body:[${body}]"/>
     </route>
     <route id="cancelBookingRoute">
-        <from uri="direct:cancelBooking"/>
+        <from uri="direct://cancelBooking"/>
         <log message="cancelBooking Body:[${body}]"/>
         <convertBodyTo type="java.lang.String" />
         <to uri="activemq:queue:cancelbooking" pattern="InOut"/>
@@ -60,7 +60,7 @@
     </route>
     
     <route id="listAvailablePlanesRoute">
-        <from uri="direct:listAvailablePlanes"/>
+        <from uri="direct://listAvailablePlanes"/>
         <convertBodyTo type="com.jboss.soap.service.acmedemo.FlightRequest"/>
         <log message="listAvailable Body:[${body.startCity},${body.endCity},${body.startDate},${body.endDate}]"/>
         <marshal>

@@ -135,9 +135,4 @@
       </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
-  <wsdl:service name="AcmeDemoService">
-    <wsdl:port binding="tns:AcmeDemoServiceSoapBinding" name="AcmeDemoInterfaceImplPort">
-      <soap:address location="http://rhel7-workstation-npatel:8080/acme-flight-service-1.0/AcmeDemoInterface"/>
-    </wsdl:port>
-  </wsdl:service>
 </wsdl:definitions>
