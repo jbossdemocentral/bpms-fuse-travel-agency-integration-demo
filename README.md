@@ -98,6 +98,10 @@ Booking a trip to Edinburgh (just one scenario)
 
 Supporting Articles
 -------------------
+[Integration Project- Micro Services Migration Story with JBoss BPM Travel Agency - Part Three](http://wei-meilin.blogspot.nl/2015/05/integration-project-micro-services_15.html)
+
+[Integration Project- Micro Services Migration Story with JBoss BPM Travel Agency - Part Two](http://wei-meilin.blogspot.nl/2015/05/integration-project-micro-services_11.html)
+
 [Integration Project- Micro Services Migration Story with JBoss BPM Travel Agency - Part One](http://wei-meilin.blogspot.tw/2015/05/integration-project-micro-services.html)
 
 [A Micro Services Migration Story with JBoss BPM Travel Agency](http://www.schabell.org/2015/05/micro-services-migration-story-with-jboss-bpm-travel-agency.html)
