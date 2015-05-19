@@ -12,6 +12,7 @@ public class ListFlightBean {
 		Flight flightFound = new Flight();
 		
 		flightFound.setPlaneId((Integer)promotedflight.get("flightid"));
+		flightFound.setCompany((String)promotedflight.get("airline"));
 		flightFound.setRatePerPerson(BigDecimal.valueOf((Double)promotedflight.get("price")));
 		flightFound.setStartCity((String)promotedflight.get("departure"));
 		flightFound.setTargetCity((String)promotedflight.get("destination"));
