@@ -60,7 +60,7 @@
 	<route id="getAvailableHotelRoute">
         <from uri="direct:getAvailableHotel"/>
         <convertBodyTo type="acme.service.soap.hotelws.HotelRequest"/>
-        <log message="listAvailable Hotels targetcity:${body.targetCity} startDate:${body.startDate} endDate{$body.endDate}"/>
+        <log message="listAvailable Hotels targetcity:${body.targetCity} startDate:${body.startDate} endDate:${body.endDate}"/>
         <marshal>
             <json library="Jackson"/>
         </marshal>
