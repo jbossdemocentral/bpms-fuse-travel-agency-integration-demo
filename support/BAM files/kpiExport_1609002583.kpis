@@ -1,0 +1,879 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kpis>
+  <dataprovider code="dataprovider_98751433117362720" type="sql">
+    <description language="en">bDash Booking Performance</description>
+    <sqlprovider>
+      <datasource>DashboardDS</datasource>
+      <query type="default">select
+	sum(bo.totalprice) as totalsales, 
+	count(*) as numberofbookings, 
+	proc.status
+from
+			test.public.bookingobject bo 
+	left join	(select  
+				count(*) as numberofbookings,  
+				p.status,  
+				p.processinstanceid
+			from 
+						test.public.processinstancelog p
+				left join	test.public.bookingobject b 
+				on (b.bookingid = p.processinstanceid or b.bookingid = p.parentprocessinstanceid)
+			where
+				{sql_condition, optional, p.processname, processname} and
+        			{sql_condition, optional, p.user_identity, userid} and
+        			{sql_condition, optional, p.start_date, start_date} and
+        			{sql_condition, optional, p.end_date, end_date} and
+        			{sql_condition, optional, p.processversion, processversion} and
+        			{sql_condition, optional, p.duration, duration} and
+        			{sql_condition, optional, p.status, status} and
+        			{sql_condition, optional, b.bookingid, bookingid}
+				
+		group by p.duration, p.start_date, p.end_date, p.user_identity, p.processname, p.status, p.processinstanceid, b.bookingid) as proc
+where
+	bo.bookingid = proc.processinstanceid
+group by
+	proc.status</query>
+      <query type="h2">select
+	sum(bo.totalprice) as totalsales, 
+	count(*) as numberofbookings, 
+	proc.status
+from
+			test.public.bookingobject bo 
+	left join	(select  
+				count(*) as numberofbookings,  
+				p.status,  
+				p.processinstanceid
+			from 
+						test.public.processinstancelog p
+				left join	test.public.bookingobject b 
+				on (b.bookingid = p.processinstanceid or b.bookingid = p.parentprocessinstanceid)
+			where
+				{sql_condition, optional, p.processname, processname} and
+        			{sql_condition, optional, p.user_identity, userid} and
+        			{sql_condition, optional, p.start_date, start_date} and
+        			{sql_condition, optional, p.end_date, end_date} and
+        			{sql_condition, optional, p.processversion, processversion} and
+        			{sql_condition, optional, p.duration, duration} and
+        			{sql_condition, optional, p.status, status} and
+        			{sql_condition, optional, b.bookingid, bookingid}
+				
+		group by p.duration, p.start_date, p.end_date, p.user_identity, p.processname, p.status, p.processinstanceid, b.bookingid) as proc
+where
+	bo.bookingid = proc.processinstanceid
+group by
+	proc.status</query>
+    </sqlprovider>
+    <dataproperties>
+      <dataproperty id="totalsales">
+        <domain>org.jboss.dashboard.domain.numeric.NumericDomain</domain>
+        <name language="fr">totalsales</name>
+        <name language="zh">totalsales</name>
+        <name language="ja">totalsales</name>
+        <name language="en">total sales</name>
+        <name language="es">totalsales</name>
+        <name language="de">totalsales</name>
+        <name language="pt">totalsales</name>
+      </dataproperty>
+      <dataproperty id="numberofbookings">
+        <domain>org.jboss.dashboard.domain.numeric.NumericDomain</domain>
+        <name language="fr">numberofbookings</name>
+        <name language="zh">numberofbookings</name>
+        <name language="ja">numberofbookings</name>
+        <name language="en">number of bookings</name>
+        <name language="es">numberofbookings</name>
+        <name language="de">numberofbookings</name>
+        <name language="pt">numberofbookings</name>
+      </dataproperty>
+      <dataproperty id="status">
+        <domain convertedFromNumeric="true" >org.jboss.dashboard.domain.label.LabelDomain</domain>
+        <name language="fr">status</name>
+        <name language="zh">status</name>
+        <name language="ja">status</name>
+        <name language="en">status</name>
+        <name language="es">status</name>
+        <name language="de">status</name>
+        <name language="pt">status</name>
+      </dataproperty>
+    </dataproperties>
+  </dataprovider>
+  <dataprovider code="dataprovider_99231433117966302" type="sql">
+    <description language="en">bDash Profit Loss</description>
+    <sqlprovider>
+      <datasource>DashboardDS</datasource>
+<query>select
+	sum(sales.totalsales) as totSales,
+	sum(costs.totalcosts) as totCosts,
+	sum(sales.totalsales - costs.totalcosts) as margin, 
+	sales.status
+from
+	(select
+		sum(bo.totalprice) as totalsales, 
+		count(*) as numberofsales, 
+		proc.status,
+		bo.bookingid
+	from
+				test.public.bookingobject bo 
+		left join	(select count(p.id), 
+				p.status,
+				p.processinstanceid
+			from 
+						test.public.processinstancelog p
+				left join 	test.public.bookingobject b 
+				on		(b.bookingid = p.processinstanceid or b.bookingid = p.parentprocessinstanceid) 
+			where
+				{sql_condition, optional, p.processname, processname} and 
+				{sql_condition, optional, p.start_date, start_date} and 
+				{sql_condition, optional, p.end_date, end_date} and 
+				{sql_condition, optional, p.user_identity, userid} and 
+				{sql_condition, optional, b.bookingconfirmed, bookingconfirmed}
+			group by 
+				p.status,
+				p.processinstanceid) as proc
+		on bo.bookingid = proc.processinstanceid
+	where
+	 	proc.status=2
+	group by
+		proc.status, bo.bookingid) as sales,
+	
+	(select
+		sum((a.numberoftravelers * f.rateperperson)+(h.roomprice)) as totalcosts, 
+		count(*), 
+		proc.status,
+		bo.bookingid
+	from
+				test.public.bookingobject bo
+		left join	test.public.applicant a
+		on		bo.applicant_appid=a.appid
+		left join	test.public.flight f
+		on		bo.availableflights_fid=f.fid
+		left join 	test.public.hotel h
+		on		bo.availablehotels_hid=h.hid
+		left join	(select  count(*), 
+				p.status,
+				p.processinstanceid
+			from 
+						test.public.processinstancelog p
+				left join	test.public.bookingobject b 
+				on 		(b.bookingid = p.processinstanceid or b.bookingid = p.parentprocessinstanceid)
+			where
+				{sql_condition, optional, p.processname, processname} and 
+				{sql_condition, optional, p.start_date, start_date} and 
+				{sql_condition, optional, p.end_date, end_date} and 
+				{sql_condition, optional, p.user_identity, userid} and 
+				{sql_condition, optional, b.bookingconfirmed, bookingconfirmed}
+			group by 
+				p.status, 
+				p.processinstanceid) as proc
+		on bo.bookingid = proc.processinstanceid
+	where
+		(proc.status=2)
+	group by
+		proc.status, bo.bookingid) as costs
+where
+	sales.bookingid = costs.bookingid
+group by
+	sales.status</query>
+    </sqlprovider>
+    <dataproperties>
+      <dataproperty id="totsales">
+        <domain>org.jboss.dashboard.domain.numeric.NumericDomain</domain>
+        <name language="fr">totsales</name>
+        <name language="zh">totsales</name>
+        <name language="ja">totsales</name>
+        <name language="en">total sales</name>
+        <name language="es">totsales</name>
+        <name language="de">totsales</name>
+        <name language="pt">totsales</name>
+      </dataproperty>
+      <dataproperty id="totcosts">
+        <domain>org.jboss.dashboard.domain.numeric.NumericDomain</domain>
+        <name language="fr">totcosts</name>
+        <name language="zh">totcosts</name>
+        <name language="ja">totcosts</name>
+        <name language="en">total costs</name>
+        <name language="es">totcosts</name>
+        <name language="de">totcosts</name>
+        <name language="pt">totcosts</name>
+      </dataproperty>
+      <dataproperty id="margin">
+        <domain>org.jboss.dashboard.domain.numeric.NumericDomain</domain>
+        <name language="fr">margin</name>
+        <name language="zh">margin</name>
+        <name language="ja">margin</name>
+        <name language="en">margin</name>
+        <name language="es">margin</name>
+        <name language="de">margin</name>
+        <name language="pt">margin</name>
+      </dataproperty>
+      <dataproperty id="status">
+        <domain convertedFromNumeric="true" >org.jboss.dashboard.domain.label.LabelDomain</domain>
+        <name language="fr">status</name>
+        <name language="zh">status</name>
+        <name language="ja">status</name>
+        <name language="en">status</name>
+        <name language="es">status</name>
+        <name language="de">status</name>
+        <name language="pt">status</name>
+      </dataproperty>
+    </dataproperties>
+  </dataprovider>
+  <dataprovider code="dataprovider_23761433117266213" type="sql">
+    <description language="en">bDash Route Performance</description>
+    <sqlprovider>
+      <datasource>DashboardDS</datasource>
+      <query type="default">select 
+	sum(b.totalprice), 
+	sum(a.numberoftravelers),
+	t.fromdestination, 
+	t.todestination
+from 
+			test.public.bookingobject b
+	left join	test.public.applicant a
+	on		b.applicant_appid=a.appid
+	left join	test.public.flight f
+	on		b.availableflights_fid=f.fid
+	left join	test.public.hotel h
+	on		b.availablehotels_hid=h.hid
+	left join	test.public.traveldetails t
+	on 		b.traveldetails_tdid=t.tdid
+where
+	{sql_condition, optional, f.company, company} and
+        {sql_condition, optional, h.location, location} and
+        {sql_condition, optional, h.hotelname, hotelname} and
+        {sql_condition, optional, t.fromdestination, fromdestination} and
+        {sql_condition, optional, t.todestination, todestination} and
+        {sql_condition, optional, b.bookingConfirmed, bookingConfirmed} and
+        {sql_condition, optional, a.name, name}
+group by 
+	t.fromdestination, t.todestination</query>
+      <query type="h2">select 
+	sum(b.totalprice), 
+	sum(a.numberoftravelers),
+	t.fromdestination, 
+	t.todestination
+from 
+			test.public.bookingobject b
+	left join	test.public.applicant a
+	on		b.applicant_appid=a.appid
+	left join	test.public.flight f
+	on		b.availableflights_fid=f.fid
+	left join	test.public.hotel h
+	on		b.availablehotels_hid=h.hid
+	left join	test.public.traveldetails t
+	on 		b.traveldetails_tdid=t.tdid
+where
+	{sql_condition, optional, f.company, company} and
+        {sql_condition, optional, h.location, location} and
+        {sql_condition, optional, h.hotelname, hotelname} and
+        {sql_condition, optional, t.fromdestination, fromdestination} and
+        {sql_condition, optional, t.todestination, todestination} and
+        {sql_condition, optional, b.bookingConfirmed, bookingConfirmed} and
+        {sql_condition, optional, a.name, name}
+group by 
+	t.fromdestination, t.todestination</query>
+    </sqlprovider>
+    <dataproperties>
+      <dataproperty id="sum(b.totalprice)">
+        <domain>org.jboss.dashboard.domain.numeric.NumericDomain</domain>
+        <name language="fr">sum(b.totalprice)</name>
+        <name language="zh">sum(b.totalprice)</name>
+        <name language="ja">sum(b.totalprice)</name>
+        <name language="en">total price</name>
+        <name language="es">sum(b.totalprice)</name>
+        <name language="de">sum(b.totalprice)</name>
+        <name language="pt">sum(b.totalprice)</name>
+      </dataproperty>
+      <dataproperty id="sum(a.numberoftravelers)">
+        <domain>org.jboss.dashboard.domain.numeric.NumericDomain</domain>
+        <name language="fr">sum(a.numberoftravelers)</name>
+        <name language="zh">sum(a.numberoftravelers)</name>
+        <name language="ja">sum(a.numberoftravelers)</name>
+        <name language="en">number of travelers</name>
+        <name language="es">sum(a.numberoftravelers)</name>
+        <name language="de">sum(a.numberoftravelers)</name>
+        <name language="pt">sum(a.numberoftravelers)</name>
+      </dataproperty>
+      <dataproperty id="fromdestination">
+        <domain>org.jboss.dashboard.domain.label.LabelDomain</domain>
+        <name language="fr">fromdestination</name>
+        <name language="zh">fromdestination</name>
+        <name language="ja">fromdestination</name>
+        <name language="en">from city</name>
+        <name language="es">fromdestination</name>
+        <name language="de">fromdestination</name>
+        <name language="pt">fromdestination</name>
+      </dataproperty>
+      <dataproperty id="todestination">
+        <domain>org.jboss.dashboard.domain.label.LabelDomain</domain>
+        <name language="fr">todestination</name>
+        <name language="zh">todestination</name>
+        <name language="ja">todestination</name>
+        <name language="en">to city</name>
+        <name language="es">todestination</name>
+        <name language="de">todestination</name>
+        <name language="pt">todestination</name>
+      </dataproperty>
+    </dataproperties>
+  </dataprovider>
+  <kpi code="kpi_24611433150256065">
+    <description language="en">Bookings by Sales</description>
+    <provider code="dataprovider_98751433117362720" />
+    <displayer type="piechart" renderer="nvd3">
+      <domain>
+        <propertyid>status</propertyid>
+        <name language="fr">status</name>
+        <name language="zh">status</name>
+        <name language="ja">status</name>
+        <name language="en">status</name>
+        <name language="es">status</name>
+        <name language="de">status</name>
+        <name language="pt">status</name>
+        <maxnumberofintervals>10</maxnumberofintervals>
+      </domain>
+      <range>
+        <propertyid>totalsales</propertyid>
+        <name language="fr">totalsales</name>
+        <name language="zh">totalsales</name>
+        <name language="ja">totalsales</name>
+        <name language="en">total sales</name>
+        <name language="es">totalsales</name>
+        <name language="de">totalsales</name>
+        <name language="pt">totalsales</name>
+        <scalarfunction>sum</scalarfunction>
+      </range>
+      <type></type>
+      <showlabelsxaxis>true</showlabelsxaxis>
+      <color>#FFFFFF</color>
+      <backgroundcolor>#FFFFFF</backgroundcolor>
+      <width>600</width>
+      <height>300</height>
+      <showlegend>false</showlegend>
+      <axisinteger>false</axisinteger>
+      <legendanchor>south</legendanchor>
+      <showtitle>true</showtitle>
+      <align>center</align>
+      <marginleft>80</marginleft>
+      <marginright>30</marginright>
+      <margintop>30</margintop>
+      <marginbottom>100</marginbottom>
+    </displayer>
+  </kpi>
+  <kpi code="kpi_24591433150141355">
+    <description language="en">Bookings by Status</description>
+    <provider code="dataprovider_98751433117362720" />
+    <displayer type="barchart" renderer="nvd3">
+      <domain>
+        <propertyid>status</propertyid>
+        <name language="fr">status</name>
+        <name language="zh">status</name>
+        <name language="ja">status</name>
+        <name language="en">status</name>
+        <name language="es">status</name>
+        <name language="de">status</name>
+        <name language="pt">status</name>
+        <maxnumberofintervals>10</maxnumberofintervals>
+      </domain>
+      <range>
+        <propertyid>numberofbookings</propertyid>
+        <name language="fr">numberofbookings</name>
+        <name language="zh">numberofbookings</name>
+        <name language="ja">numberofbookings</name>
+        <name language="en">number of bookings</name>
+        <name language="es">numberofbookings</name>
+        <name language="de">numberofbookings</name>
+        <name language="pt">numberofbookings</name>
+        <scalarfunction>count</scalarfunction>
+      </range>
+      <type></type>
+      <showlabelsxaxis>true</showlabelsxaxis>
+      <labelanglexaxis>-45</labelanglexaxis>
+      <showlinesarea>false</showlinesarea>
+      <color>#FFFFFF</color>
+      <backgroundcolor>#FFFFFF</backgroundcolor>
+      <width>600</width>
+      <height>300</height>
+      <showlegend>false</showlegend>
+      <axisinteger>true</axisinteger>
+      <legendanchor>south</legendanchor>
+      <showtitle>true</showtitle>
+      <align>center</align>
+      <marginleft>80</marginleft>
+      <marginright>30</marginright>
+      <margintop>30</margintop>
+      <marginbottom>100</marginbottom>
+    </displayer>
+  </kpi>
+  <kpi code="kpi_25371433151050776">
+    <description language="en">Number of Bookings by Status</description>
+    <provider code="dataprovider_98751433117362720" />
+    <displayer type="barchart" renderer="nvd3">
+      <domain>
+        <propertyid>status</propertyid>
+        <name language="fr">status</name>
+        <name language="zh">status</name>
+        <name language="ja">status</name>
+        <name language="en">status</name>
+        <name language="es">status</name>
+        <name language="de">status</name>
+        <name language="pt">status</name>
+        <maxnumberofintervals>10</maxnumberofintervals>
+      </domain>
+      <range>
+        <propertyid>status</propertyid>
+        <name language="fr">status</name>
+        <name language="zh">status</name>
+        <name language="ja">status</name>
+        <name language="en">status</name>
+        <name language="es">status</name>
+        <name language="de">status</name>
+        <name language="pt">status</name>
+        <scalarfunction>count</scalarfunction>
+        <unit language="en">{value}</unit>
+      </range>
+      <type></type>
+      <showlabelsxaxis>true</showlabelsxaxis>
+      <labelanglexaxis>-45</labelanglexaxis>
+      <showlinesarea>false</showlinesarea>
+      <color>#FFFFFF</color>
+      <backgroundcolor>#FFFFFF</backgroundcolor>
+      <width>600</width>
+      <height>300</height>
+      <showlegend>false</showlegend>
+      <axisinteger>false</axisinteger>
+      <legendanchor>south</legendanchor>
+      <showtitle>true</showtitle>
+      <align>center</align>
+      <marginleft>80</marginleft>
+      <marginright>30</marginright>
+      <margintop>30</margintop>
+      <marginbottom>100</marginbottom>
+    </displayer>
+  </kpi>
+  <kpi code="kpi_23821433147716063">
+    <description language="en">Number of Flights From City</description>
+    <provider code="dataprovider_23761433117266213" />
+    <displayer type="barchart" renderer="nvd3">
+      <domain>
+        <propertyid>fromdestination</propertyid>
+        <name language="fr">fromdestination</name>
+        <name language="zh">fromdestination</name>
+        <name language="ja">fromdestination</name>
+        <name language="en">from city</name>
+        <name language="es">fromdestination</name>
+        <name language="de">fromdestination</name>
+        <name language="pt">fromdestination</name>
+        <maxnumberofintervals>10</maxnumberofintervals>
+      </domain>
+      <range>
+        <propertyid>fromdestination</propertyid>
+        <name language="fr">fromdestination</name>
+        <name language="zh">fromdestination</name>
+        <name language="ja">fromdestination</name>
+        <name language="en">from city</name>
+        <name language="es">fromdestination</name>
+        <name language="de">fromdestination</name>
+        <name language="pt">fromdestination</name>
+        <scalarfunction>count</scalarfunction>
+        <unit language="en">{value}</unit>
+      </range>
+      <type></type>
+      <showlabelsxaxis>true</showlabelsxaxis>
+      <labelanglexaxis>-45</labelanglexaxis>
+      <showlinesarea>false</showlinesarea>
+      <color>#FFFFFF</color>
+      <backgroundcolor>#FFFFFF</backgroundcolor>
+      <width>600</width>
+      <height>300</height>
+      <showlegend>false</showlegend>
+      <axisinteger>true</axisinteger>
+      <legendanchor>south</legendanchor>
+      <showtitle>true</showtitle>
+      <align>center</align>
+      <marginleft>80</marginleft>
+      <marginright>30</marginright>
+      <margintop>30</margintop>
+      <marginbottom>100</marginbottom>
+    </displayer>
+  </kpi>
+  <kpi code="kpi_23841433147861839">
+    <description language="en">Number of Flights To City</description>
+    <provider code="dataprovider_23761433117266213" />
+    <displayer type="barchart" renderer="nvd3">
+      <domain>
+        <propertyid>todestination</propertyid>
+        <name language="fr">todestination</name>
+        <name language="zh">todestination</name>
+        <name language="ja">todestination</name>
+        <name language="en">to city</name>
+        <name language="es">todestination</name>
+        <name language="de">todestination</name>
+        <name language="pt">todestination</name>
+        <maxnumberofintervals>10</maxnumberofintervals>
+      </domain>
+      <range>
+        <propertyid>todestination</propertyid>
+        <name language="fr">todestination</name>
+        <name language="zh">todestination</name>
+        <name language="ja">todestination</name>
+        <name language="en">to city</name>
+        <name language="es">todestination</name>
+        <name language="de">todestination</name>
+        <name language="pt">todestination</name>
+        <scalarfunction>count</scalarfunction>
+        <unit language="en">{value}</unit>
+      </range>
+      <type></type>
+      <showlabelsxaxis>true</showlabelsxaxis>
+      <labelanglexaxis>-45</labelanglexaxis>
+      <showlinesarea>false</showlinesarea>
+      <color>#FFFFFF</color>
+      <backgroundcolor>#FFFFFF</backgroundcolor>
+      <width>600</width>
+      <height>300</height>
+      <showlegend>false</showlegend>
+      <axisinteger>true</axisinteger>
+      <legendanchor>south</legendanchor>
+      <showtitle>true</showtitle>
+      <align>center</align>
+      <marginleft>80</marginleft>
+      <marginright>30</marginright>
+      <margintop>30</margintop>
+      <marginbottom>100</marginbottom>
+    </displayer>
+  </kpi>
+  <kpi code="kpi_25391433151133575">
+    <description language="en">Number of Sales by Status</description>
+    <provider code="dataprovider_99231433117966302" />
+    <displayer type="barchart" renderer="nvd3">
+      <domain>
+        <propertyid>status</propertyid>
+        <name language="fr">status</name>
+        <name language="zh">status</name>
+        <name language="ja">status</name>
+        <name language="en">status</name>
+        <name language="es">status</name>
+        <name language="de">status</name>
+        <name language="pt">status</name>
+        <maxnumberofintervals>10</maxnumberofintervals>
+      </domain>
+      <range>
+        <propertyid>totsales</propertyid>
+        <name language="fr">totsales</name>
+        <name language="zh">totsales</name>
+        <name language="ja">totsales</name>
+        <name language="en">total sales</name>
+        <name language="es">totsales</name>
+        <name language="de">totsales</name>
+        <name language="pt">totsales</name>
+        <scalarfunction>count</scalarfunction>
+        <unit language="en">{value}</unit>
+      </range>
+      <type></type>
+      <showlabelsxaxis>true</showlabelsxaxis>
+      <labelanglexaxis>-45</labelanglexaxis>
+      <showlinesarea>false</showlinesarea>
+      <color>#FFFFFF</color>
+      <backgroundcolor>#FFFFFF</backgroundcolor>
+      <width>600</width>
+      <height>300</height>
+      <showlegend>false</showlegend>
+      <axisinteger>false</axisinteger>
+      <legendanchor>south</legendanchor>
+      <showtitle>true</showtitle>
+      <align>center</align>
+      <marginleft>80</marginleft>
+      <marginright>30</marginright>
+      <margintop>30</margintop>
+      <marginbottom>100</marginbottom>
+    </displayer>
+  </kpi>
+  <kpi code="kpi_24911433150577990">
+    <description language="en">Profit and Loss by Status</description>
+    <provider code="dataprovider_99231433117966302" />
+    <displayer type="barchart" renderer="nvd3">
+      <domain>
+        <propertyid>status</propertyid>
+        <name language="fr">status</name>
+        <name language="zh">status</name>
+        <name language="ja">status</name>
+        <name language="en">status</name>
+        <name language="es">status</name>
+        <name language="de">status</name>
+        <name language="pt">status</name>
+        <maxnumberofintervals>10</maxnumberofintervals>
+      </domain>
+      <range>
+        <propertyid>margin</propertyid>
+        <name language="fr">margin</name>
+        <name language="zh">margin</name>
+        <name language="ja">margin</name>
+        <name language="en">margin</name>
+        <name language="es">margin</name>
+        <name language="de">margin</name>
+        <name language="pt">margin</name>
+        <scalarfunction>sum</scalarfunction>
+        <unit language="en">{value}</unit>
+      </range>
+      <type></type>
+      <showlabelsxaxis>true</showlabelsxaxis>
+      <labelanglexaxis>-45</labelanglexaxis>
+      <showlinesarea>false</showlinesarea>
+      <color>#FFFFFF</color>
+      <backgroundcolor>#FFFFFF</backgroundcolor>
+      <width>600</width>
+      <height>300</height>
+      <showlegend>false</showlegend>
+      <axisinteger>false</axisinteger>
+      <legendanchor>south</legendanchor>
+      <showtitle>true</showtitle>
+      <align>center</align>
+      <marginleft>80</marginleft>
+      <marginright>30</marginright>
+      <margintop>30</margintop>
+      <marginbottom>100</marginbottom>
+    </displayer>
+  </kpi>
+  <kpi code="kpi_25351433150903696">
+    <description language="en">Route Details</description>
+    <provider code="dataprovider_23761433117266213" />
+    <displayer type="table" renderer="default">
+      <rowsperpage>10</rowsperpage>
+      <headerposition>top</headerposition>
+      <htmlstyle>border: 1px solid #000000; padding:0; text-align:center;</htmlstyle>
+      <htmlclass>skn-table_border</htmlclass>
+      <rowevenclass>skn-even_row</rowevenclass>
+      <rowoddclass>skn-odd_row</rowoddclass>
+      <rowhoverclass>skn-even_row_alt</rowhoverclass>
+      <column>
+        <modelproperty>sum(b.totalprice)</modelproperty>
+        <viewindex>0</viewindex>
+        <name language="fr">sum(b.totalprice)</name>
+        <name language="zh">sum(b.totalprice)</name>
+        <name language="ja">sum(b.totalprice)</name>
+        <name language="en">total price</name>
+        <name language="es">sum(b.totalprice)</name>
+        <name language="de">sum(b.totalprice)</name>
+        <name language="pt">sum(b.totalprice)</name>
+        <hint language="fr">sum(b.totalprice)</hint>
+        <hint language="zh">sum(b.totalprice)</hint>
+        <hint language="ja">sum(b.totalprice)</hint>
+        <hint language="en">total price</hint>
+        <hint language="es">sum(b.totalprice)</hint>
+        <hint language="de">sum(b.totalprice)</hint>
+        <hint language="pt">sum(b.totalprice)</hint>
+        <headerhtmlstyle>text-align:center; width:100px; overflow:hidden; background-color:#C6D8EB; height:20px; color:#465F7D; font-weight:Bold;  white-space:nowrap;</headerhtmlstyle>
+        <cellhtmlstyle>width:100px; height:20px;  white-space:nowrap;</cellhtmlstyle>
+        <htmlvalue>{value}</htmlvalue>
+        <selectable>false</selectable>
+        <sortable>true</sortable>
+      </column>
+      <column>
+        <modelproperty>sum(a.numberoftravelers)</modelproperty>
+        <viewindex>1</viewindex>
+        <name language="fr">sum(a.numberoftravelers)</name>
+        <name language="zh">sum(a.numberoftravelers)</name>
+        <name language="ja">sum(a.numberoftravelers)</name>
+        <name language="en">number of travelers</name>
+        <name language="es">sum(a.numberoftravelers)</name>
+        <name language="de">sum(a.numberoftravelers)</name>
+        <name language="pt">sum(a.numberoftravelers)</name>
+        <hint language="fr">sum(a.numberoftravelers)</hint>
+        <hint language="zh">sum(a.numberoftravelers)</hint>
+        <hint language="ja">sum(a.numberoftravelers)</hint>
+        <hint language="en">number of travelers</hint>
+        <hint language="es">sum(a.numberoftravelers)</hint>
+        <hint language="de">sum(a.numberoftravelers)</hint>
+        <hint language="pt">sum(a.numberoftravelers)</hint>
+        <headerhtmlstyle>text-align:center; width:100px; overflow:hidden; background-color:#C6D8EB; height:20px; color:#465F7D; font-weight:Bold;  white-space:nowrap;</headerhtmlstyle>
+        <cellhtmlstyle>width:100px; height:20px;  white-space:nowrap;</cellhtmlstyle>
+        <htmlvalue>{value}</htmlvalue>
+        <selectable>false</selectable>
+        <sortable>true</sortable>
+      </column>
+      <column>
+        <modelproperty>fromdestination</modelproperty>
+        <viewindex>2</viewindex>
+        <name language="fr">fromdestination</name>
+        <name language="zh">fromdestination</name>
+        <name language="ja">fromdestination</name>
+        <name language="en">from city</name>
+        <name language="es">fromdestination</name>
+        <name language="de">fromdestination</name>
+        <name language="pt">fromdestination</name>
+        <hint language="fr">fromdestination</hint>
+        <hint language="zh">fromdestination</hint>
+        <hint language="ja">fromdestination</hint>
+        <hint language="en">from city</hint>
+        <hint language="es">fromdestination</hint>
+        <hint language="de">fromdestination</hint>
+        <hint language="pt">fromdestination</hint>
+        <headerhtmlstyle>text-align:center; width:100px; overflow:hidden; background-color:#C6D8EB; height:20px; color:#465F7D; font-weight:Bold;  white-space:nowrap;</headerhtmlstyle>
+        <cellhtmlstyle>width:100px; height:20px;  white-space:nowrap;</cellhtmlstyle>
+        <htmlvalue>{value}</htmlvalue>
+        <selectable>false</selectable>
+        <sortable>true</sortable>
+      </column>
+      <column>
+        <modelproperty>todestination</modelproperty>
+        <viewindex>3</viewindex>
+        <name language="fr">todestination</name>
+        <name language="zh">todestination</name>
+        <name language="ja">todestination</name>
+        <name language="en">to city</name>
+        <name language="es">todestination</name>
+        <name language="de">todestination</name>
+        <name language="pt">todestination</name>
+        <hint language="fr">todestination</hint>
+        <hint language="zh">todestination</hint>
+        <hint language="ja">todestination</hint>
+        <hint language="en">to city</hint>
+        <hint language="es">todestination</hint>
+        <hint language="de">todestination</hint>
+        <hint language="pt">todestination</hint>
+        <headerhtmlstyle>text-align:center; width:100px; overflow:hidden; background-color:#C6D8EB; height:20px; color:#465F7D; font-weight:Bold;  white-space:nowrap;</headerhtmlstyle>
+        <cellhtmlstyle>width:100px; height:20px;  white-space:nowrap;</cellhtmlstyle>
+        <htmlvalue>{value}</htmlvalue>
+        <selectable>false</selectable>
+        <sortable>true</sortable>
+      </column>
+    </displayer>
+  </kpi>
+  <kpi code="kpi_23881433148807080">
+    <description language="en">Total Sales by Destination City</description>
+    <provider code="dataprovider_23761433117266213" />
+    <displayer type="barchart" renderer="nvd3">
+      <domain>
+        <propertyid>todestination</propertyid>
+        <name language="fr">todestination</name>
+        <name language="zh">todestination</name>
+        <name language="ja">todestination</name>
+        <name language="en">to city</name>
+        <name language="es">todestination</name>
+        <name language="de">todestination</name>
+        <name language="pt">todestination</name>
+        <maxnumberofintervals>10</maxnumberofintervals>
+      </domain>
+      <range>
+        <propertyid>sum(b.totalprice)</propertyid>
+        <name language="fr">sum(b.totalprice)</name>
+        <name language="zh">sum(b.totalprice)</name>
+        <name language="ja">sum(b.totalprice)</name>
+        <name language="en">total price</name>
+        <name language="es">sum(b.totalprice)</name>
+        <name language="de">sum(b.totalprice)</name>
+        <name language="pt">sum(b.totalprice)</name>
+        <scalarfunction>sum</scalarfunction>
+        <unit language="en">{value}</unit>
+      </range>
+      <type></type>
+      <showlabelsxaxis>true</showlabelsxaxis>
+      <labelanglexaxis>-45</labelanglexaxis>
+      <showlinesarea>false</showlinesarea>
+      <color>#FFFFFF</color>
+      <backgroundcolor>#FFFFFF</backgroundcolor>
+      <width>600</width>
+      <height>300</height>
+      <showlegend>false</showlegend>
+      <axisinteger>false</axisinteger>
+      <legendanchor>south</legendanchor>
+      <showtitle>true</showtitle>
+      <align>center</align>
+      <marginleft>80</marginleft>
+      <marginright>30</marginright>
+      <margintop>30</margintop>
+      <marginbottom>100</marginbottom>
+    </displayer>
+  </kpi>
+  <kpi code="kpi_23861433148570610">
+    <description language="en">Total Sales by Start City</description>
+    <provider code="dataprovider_23761433117266213" />
+    <displayer type="barchart" renderer="nvd3">
+      <domain>
+        <propertyid>fromdestination</propertyid>
+        <name language="fr">fromdestination</name>
+        <name language="zh">fromdestination</name>
+        <name language="ja">fromdestination</name>
+        <name language="en">from city</name>
+        <name language="es">fromdestination</name>
+        <name language="de">fromdestination</name>
+        <name language="pt">fromdestination</name>
+        <maxnumberofintervals>10</maxnumberofintervals>
+      </domain>
+      <range>
+        <propertyid>sum(b.totalprice)</propertyid>
+        <name language="fr">sum(b.totalprice)</name>
+        <name language="zh">sum(b.totalprice)</name>
+        <name language="ja">sum(b.totalprice)</name>
+        <name language="en">total price</name>
+        <name language="es">sum(b.totalprice)</name>
+        <name language="de">sum(b.totalprice)</name>
+        <name language="pt">sum(b.totalprice)</name>
+        <scalarfunction>sum</scalarfunction>
+        <unit language="en">{value}</unit>
+      </range>
+      <type></type>
+      <showlabelsxaxis>true</showlabelsxaxis>
+      <labelanglexaxis>-45</labelanglexaxis>
+      <showlinesarea>false</showlinesarea>
+      <color>#FFFFFF</color>
+      <backgroundcolor>#FFFFFF</backgroundcolor>
+      <width>600</width>
+      <height>300</height>
+      <showlegend>false</showlegend>
+      <axisinteger>false</axisinteger>
+      <legendanchor>south</legendanchor>
+      <showtitle>true</showtitle>
+      <align>center</align>
+      <marginleft>80</marginleft>
+      <marginright>30</marginright>
+      <margintop>30</margintop>
+      <marginbottom>100</marginbottom>
+    </displayer>
+  </kpi>
+  <kpi code="kpi_24951433150724841">
+    <description language="en">Total Sales by Status</description>
+    <provider code="dataprovider_99231433117966302" />
+    <displayer type="barchart" renderer="nvd3">
+      <domain>
+        <propertyid>status</propertyid>
+        <name language="fr">status</name>
+        <name language="zh">status</name>
+        <name language="ja">status</name>
+        <name language="en">status</name>
+        <name language="es">status</name>
+        <name language="de">status</name>
+        <name language="pt">status</name>
+        <maxnumberofintervals>10</maxnumberofintervals>
+      </domain>
+      <range>
+        <propertyid>totsales</propertyid>
+        <name language="fr">totsales</name>
+        <name language="zh">totsales</name>
+        <name language="ja">totsales</name>
+        <name language="en">total sales</name>
+        <name language="es">totsales</name>
+        <name language="de">totsales</name>
+        <name language="pt">totsales</name>
+        <scalarfunction>sum</scalarfunction>
+        <unit language="en">{value}</unit>
+      </range>
+      <type></type>
+      <showlabelsxaxis>true</showlabelsxaxis>
+      <labelanglexaxis>-45</labelanglexaxis>
+      <showlinesarea>false</showlinesarea>
+      <color>#FFFFFF</color>
+      <backgroundcolor>#FFFFFF</backgroundcolor>
+      <width>600</width>
+      <height>300</height>
+      <showlegend>false</showlegend>
+      <axisinteger>false</axisinteger>
+      <legendanchor>south</legendanchor>
+      <showtitle>true</showtitle>
+      <align>center</align>
+      <marginleft>80</marginleft>
+      <marginright>30</marginright>
+      <margintop>30</margintop>
+      <marginbottom>100</marginbottom>
+    </displayer>
+  </kpi>
+</kpis>

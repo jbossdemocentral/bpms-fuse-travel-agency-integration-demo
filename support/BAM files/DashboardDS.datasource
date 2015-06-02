@@ -1,0 +1,4 @@
+type=JNDI
+name=DashboardDS
+testQuery=SELECT 1
+jndiPath=java:jboss/datasources/ExampleDS

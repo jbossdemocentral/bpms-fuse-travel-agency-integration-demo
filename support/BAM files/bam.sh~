@@ -1,0 +1,3 @@
+#!/bin/sh 
+
+http://localhost:8080/external-client-ui-form-1.0/SimpleServlet?applicantName=Tito+Nova&emailAddress=test%40email.com&numberOfTravelers=2&fromDestination=London&toDestination=Edinburgh&preferredDateOfArrival=2014-02-31&preferredDateOfDeparture=2014-12-16&otherDetails=N%2FA
