@@ -20,6 +20,7 @@ public class RandomFlightBean implements Processor{
 		if(flights == null || flights.size() == 0){
 			flight = new FlightInfo();
 			flight.setFlightid(200001);
+			flight.setAirline("The Grand Default Airline");
 			flight.setDeparture((String)exchange.getIn().getHeader("requestDeparture"));
 			flight.setDestination((String)exchange.getIn().getHeader("requestDestination"));
 			flight.setDeparturetime((String)exchange.getIn().getHeader("requestDepartureDate"));
