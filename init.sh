@@ -151,10 +151,11 @@ mvn clean install -f $PRJ_DIR/pom.xml
 
 echo
 echo "  - adding acmeDataModel-1.0.jar to business-central.war/WEB-INF/lib"
+echo
 cp -r $PRJ_DIR/acme-data-model/target/acmeDataModel-1.0.jar $SERVER_DIR/business-central.war/WEB-INF/lib
 
-echo
 echo "  - deploying external-client-ui-form-1.0.war to EAP deployments directory"
+echo
 cp -r $PRJ_DIR/external-client-ui-form/target/external-client-ui-form-1.0.war $SERVER_DIR/
 
 echo "  - setting up standalone.xml configuration adjustments..."
