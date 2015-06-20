@@ -17,9 +17,8 @@ BPM_VERSION=6.1
 
 #Fuse env 
 DEMO_HOME=./target
-FUSE=jboss-fuse-6.1.1.redhat-412
 FUSE_ZIP=jboss-fuse-full-6.1.1.redhat-412.zip
-FUSE_HOME=$DEMO_HOME/$FUSE
+FUSE_HOME=$DEMO_HOME/jboss-fuse-6.1.1.redhat-412
 FUSE_PROJECT=projects/fuseparent
 FUSE_SERVER_CONF=$FUSE_HOME/etc
 FUSE_SERVER_SYSTEM=$FUSE_HOME/system
@@ -81,7 +80,7 @@ else
 fi
 
 if [[ -r $SRC_DIR/$FUSE_ZIP || -L $SRC_DIR/$FUSE_ZIP ]]; then
-		echo $DEMO FUSE is present...
+		echo Product sources FUSE are present...
 		echo
 else
 		echo Need to download $FUSE_ZIP package from the Customer Support Portal 
@@ -110,6 +109,7 @@ if [ $? -ne 0 ]; then
 	exit
 fi
 
+echo
 echo "JBoss BPM Suite installer running now..."
 echo
 java -jar $SRC_DIR/$BPMS $SUPPORT_DIR/installation-bpms -variablefile $SUPPORT_DIR/installation-bpms.variables
@@ -121,37 +121,16 @@ fi
 
 if [ -x target ]; then
   # Unzip the JBoss FUSE instance.
+	echo
   echo Installing JBoss FUSE $FUSE_VERSION
   echo
-  unzip -q -d target $SRC_DIR/$FUSE
+  unzip -q -d target $SRC_DIR/$FUSE_ZIP
 else
 	echo
 	echo Missing target directory, stopping installation.
 	echo 
 	exit
 fi
-
-
-# Move the old JBoss instance, if it exists, to the OLD position.
-if [ -x $FUSE_HOME ]; then
-		echo "  - existing JBoss FUSE detected..."
-		echo
-		echo "  - moving existing JBoss FUSE aside..."
-		echo
-		rm -rf $FUSE_HOME.OLD
-		mv $FUSE_HOME $FUSE_HOME.OLD
-
-		# Unzip the JBoss instance.
-		echo Unpacking JBoss FUSE $VERSION
-		echo
-		unzip -q -d $DEMO_HOME $SRC_DIR/$FUSE_ZIP
-else
-		# Unzip the JBoss instance.
-		echo Unpacking new JBoss FUSE...
-		echo
-		unzip -q -d $DEMO_HOME $SRC_DIR/$FUSE_ZIP
-fi
-
 
 echo "  - enabling demo accounts role setup in application-roles.properties file..."
 echo
@@ -164,8 +143,11 @@ cp -r $SUPPORT_DIR/bpm-suite-demo-niogit $SERVER_BIN/.niogit
 echo "  - setting up web services..."
 echo
 mvn clean install -f $PRJ_DIR/pom.xml
-cp -r $PRJ_DIR/acme-demo-flight-service/target/acme-flight-service-1.0.war $SERVER_DIR
-cp -r $PRJ_DIR/acme-demo-hotel-service/target/acme-hotel-service-1.0.war $SERVER_DIR
+
+# Not copying original web serivces as building new Fuse microservices instead.
+#
+#cp -r $PRJ_DIR/acme-demo-flight-service/target/acme-flight-service-1.0.war $SERVER_DIR
+#cp -r $PRJ_DIR/acme-demo-hotel-service/target/acme-hotel-service-1.0.war $SERVER_DIR
 
 echo
 echo "  - adding acmeDataModel-1.0.jar to business-central.war/WEB-INF/lib"
