@@ -21,17 +21,13 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <fabric8.parentProfiles>feature-camel mq-client</fabric8.parentProfiles>                                                       
 	<fabric8.profile>demo-travelagency-bookingservice</fabric8.profile>
-	<fabric8.bundles>wrap:mvn:org.apache.openjpa/openjpa-all/2.3.0 wrap:mvn:com.h2database/h2/1.4.181</fabric8.bundles>
-	<fabric8.features>camel-jpa activemq-camel</fabric8.features>                
+	<fabric8.bundles>wrap:mvn:com.h2database/h2/1.4.181</fabric8.bundles>
+	<fabric8.features>camel-jpa activemq-camel hibernate jdbc</fabric8.features>                
   </properties>
 
 
   <dependencies>
-  	<dependency>
-		<groupId>org.ow2.asm</groupId>
-		<artifactId>asm-all</artifactId>
-		<version>4.1</version>
-    </dependency>
+
     
     <dependency>
       <groupId>org.apache.camel</groupId>
@@ -44,16 +40,72 @@
 
  	<!-- Database persistence-->
 	<dependency>
-	    <groupId>org.apache.camel</groupId>
-	    <artifactId>camel-jpa</artifactId>
+	  <groupId>org.apache.camel</groupId>
+	  <artifactId>camel-jpa</artifactId>
 	</dependency>
 		
 	<dependency>
-    	<groupId>org.apache.openjpa</groupId>
-        <artifactId>openjpa</artifactId>
-        <version>2.3.0</version>
-    </dependency>  
-       
+	  <groupId>org.hibernate</groupId>
+	  <artifactId>hibernate-core</artifactId>
+	  <version>4.2.19.Final</version>
+    </dependency>
+	<!--  <dependency>
+	  <groupId>org.hibernate</groupId>
+	  <artifactId>hibernate-validator</artifactId>
+	  <version>5.0.3.Final</version>
+    </dependency>
+	<dependency>
+	  <groupId>org.hibernate.common</groupId>
+	  <artifactId>hibernate-commons-annotations</artifactId>
+	  <version>4.0.4.Final</version>
+	</dependency>
+	<dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
+      <version>1.0.1.Final</version>
+	</dependency>
+
+	<dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>4.2.19.Final</version>
+	</dependency>
+	
+	<dependency>
+	   <groupId>javax.persistence</groupId>
+	   <artifactId>persistence-api</artifactId>
+	   <version>1.0.2</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.aries.blueprint</groupId>
+		<artifactId>org.apache.aries.blueprint.core</artifactId>
+	</dependency>	
+	<dependency>
+		<groupId>org.apache.aries.jpa</groupId>
+		<artifactId>org.apache.aries.jpa.api</artifactId>
+		<version>1.0.2</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.aries.jpa</groupId>
+		<artifactId>org.apache.aries.jpa.blueprint.aries</artifactId>
+		<version>1.0.4</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.aries.jpa</groupId>
+		<artifactId>org.apache.aries.jpa.container</artifactId>
+		<version>1.0.2</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.aries.jpa</groupId>
+		<artifactId>org.apache.aries.jpa.container.context</artifactId>
+		<version>1.0.4</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.aries.proxy</groupId>
+		<artifactId>org.apache.aries.proxy</artifactId>
+	</dependency>-->
+	
+		              
  	<dependency>
 		<groupId>commons-dbcp</groupId>
 		<artifactId>commons-dbcp</artifactId>
@@ -64,6 +116,7 @@
 		<artifactId>h2</artifactId>
 		<version>1.4.181</version>
 	</dependency>
+	
 	
     <!--Messaging from and to AMQ -->
 	<dependency>
@@ -76,36 +129,6 @@
     <defaultGoal>install</defaultGoal>
 
     <plugins>
-	    <plugin>
-        <groupId>org.apache.openjpa</groupId>
-        <artifactId>openjpa-maven-plugin</artifactId>
-        <version>2.2.0</version>
-        <configuration>
-            <includes>org/blogdemo/*.class</includes>
-            <excludes>com/jboss/soap/service/*/*.class</excludes>
-            <addDefaultConstructor>true</addDefaultConstructor>               
-            <enforcePropertyRestrictions>true</enforcePropertyRestrictions>
-        </configuration>
-        <executions>
-            <execution>
-                <id>enhancer</id>
-                <phase>process-classes</phase>
-                <goals>
-                    <goal>enhance</goal>
-                </goals>
-            </execution>
-        </executions>
-        <dependencies>
-            <dependency>
-                <groupId>org.apache.openjpa</groupId>
-                <artifactId>openjpa</artifactId>
-                <!-- set the version to be the same as the level in your runtime -->
-                <version>2.3.0</version>
-            </dependency>
-        </dependencies>
-    </plugin>    
-
-
       <!-- to generate the MANIFEST-FILE of the bundle -->
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -115,17 +138,17 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>travelagency</Bundle-SymbolicName>
+            <Meta-Persistence>META-INF/persistence.xml</Meta-Persistence>
             <Private-Package>org.blogdemo.travelagency.*</Private-Package>
             <Import-Package>
             	org.h2,
-            	serp.util, 
-            	javax.persistence,
-            	*</Import-Package>
+            	org.hibernate.proxy,
+               	javassist.util.proxy,
+            	*
+            </Import-Package>
           </instructions>
         </configuration>
       </plugin>
-
-	
       
     </plugins>
   </build>

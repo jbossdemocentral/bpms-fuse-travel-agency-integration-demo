@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-       xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0"
-       xmlns:camel="http://camel.apache.org/schema/blueprint"
-       xsi:schemaLocation="    
-       http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
-       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+<ABC>
    
-   	  
-    <bean id="jpaTxManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <jpa:unit unitname="mytravelagencyUnit" property="entityManagerFactory"/>
-    </bean>
-        
-   	<bean id="jpa" class="org.apache.camel.component.jpa.JpaComponent">
-       <jpa:unit unitname="mytravelagencyUnit" property="entityManagerFactory"/>
+  	<bean id="jpa" class="org.apache.camel.component.jpa.JpaComponent">
+       <property name="entityManagerFactory" ref="entityManagerFactory" />
        <property name="transactionManager" ref="jpaTxManager"/>
     </bean>
     
+    <bean id="jpaTxManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
     
+   	<bean id="entityManagerFactoryBean" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" init-method="afterPropertiesSet">
+        <property name="persistenceUnitName" value="WTFWTF"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+        </property>
+    </bean>
+
+   	<bean id="entityManagerFactory" factory-ref="entityManagerFactoryBean" factory-method="getObject" />
+  
    <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
 	  	<property name="brokerURL" value="tcp://localhost:61616"/>
 	    <property name="userName" value="admin"/>
@@ -59,4 +60,4 @@
     </route>
 </camelContext>
 
-</blueprint>
+</ABC>

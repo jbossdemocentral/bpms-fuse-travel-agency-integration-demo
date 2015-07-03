@@ -28,48 +28,51 @@
 	        <property name="configuration" ref="jmsConfig"/>
 	    </bean>
  		<cxf:cxfEndpoint id="hotelEndpoint"
-                   address="/acme-hotel-service-2.0"
+                   address="http://localhost:8183/cxf/acme-hotel-service-2.0"
                    serviceClass="acme.service.soap.hotelws.HotelWS"
                    wsdlURL="wsdl/HotelWS.wsdl"/> 
  
                    
   		<bean id="hotelBean" class="org.blogdemo.travelagency.hotelwsendpoint.ListHotelBean" />
   <camelContext trace="true" id="blueprintContext" xmlns="http://camel.apache.org/schema/blueprint">
-    <route>
-        <from uri="cxf:bean:hotelEndpoint"/>
-        <log message="${header.operationName}"/>
-        <recipientList>
-            <simple>direct:${header.operationName}</simple>
-        </recipientList>
-    </route>
-	<route>
-        <from uri="direct:bookHotel"/>
-        <log message="Book Hotel Body:[${body}]"/>
-        <convertBodyTo type="java.lang.String"/>
-        <to uri="activemq:queue:hotelbooking" pattern="InOut"/>
-        <log message="Book Hotel Body:[${body}]"/>
-    </route>
-    <route>
-        <from uri="direct:cancelBooking"/>
-        <log message="Cancel Hotel Booking Body:[${body}]"/>
-        <convertBodyTo type="java.lang.String"/>
-        <to uri="activemq:queue:cancelhotelbooking" pattern="InOut"/>
-        <convertBodyTo type="java.lang.Integer"/>
-        <log message="Cancel Hotel Body:[${body}]"/>
-    </route>
-	<route id="getAvailableHotelRoute">
-        <from uri="direct:getAvailableHotel"/>
-        <convertBodyTo type="acme.service.soap.hotelws.HotelRequest"/>
-        <log message="listAvailable Hotels targetcity:${body.targetCity} startDate:${body.startDate} endDate:${body.endDate}"/>
-        <marshal>
-            <json library="Jackson"/>
-        </marshal>
-        <to uri="activemq:queue:requestHotel" pattern="InOut"/>
-        <unmarshal>
-            <json unmarshalTypeName="java.util.HashMap" library="Jackson"/>
-        </unmarshal>
-        <bean method="getResort" ref="hotelBean"/>
-    </route>
+  <route>
+    <from uri="cxf:bean:hotelEndpoint"/>
+    <log message="${header.operationName}"/>
+    <setHeader headerName="operationName">
+      <constant>getAvailableHotel</constant>
+    </setHeader>
+    <recipientList>
+      <simple>direct:${header.operationName}</simple>
+    </recipientList>
+  </route>
+  <route>
+    <from uri="direct:bookHotel"/>
+    <log message="Book Hotel Body:[${body}]"/>
+    <convertBodyTo type="java.lang.String"/>
+    <to pattern="InOut" uri="activemq:queue:hotelbooking"/>
+    <log message="Book Hotel Body:[${body}]"/>
+  </route>
+  <route>
+    <from uri="direct:cancelBooking"/>
+    <log message="Cancel Hotel Booking Body:[${body}]"/>
+    <convertBodyTo type="java.lang.String"/>
+    <to pattern="InOut" uri="activemq:queue:cancelhotelbooking"/>
+    <convertBodyTo type="java.lang.Integer"/>
+    <log message="Cancel Hotel Body:[${body}]"/>
+  </route>
+  <route id="getAvailableHotelRoute">
+    <from uri="direct:getAvailableHotel"/>
+    <convertBodyTo type="acme.service.soap.hotelws.HotelRequest"/>
+    <log message="listAvailable Hotels targetcity:${body.targetCity} startDate:${body.startDate} endDate:${body.endDate}"/>
+    <marshal>
+      <json library="Jackson"/>
+    </marshal>
+    <to pattern="InOut" uri="activemq:queue:requestHotel"/>
+    <unmarshal>
+      <json library="Jackson" unmarshalTypeName="java.util.HashMap"/>
+    </unmarshal>
+    <bean ref="hotelBean" method="getResort"/>
+  </route>
 </camelContext>
 
 </blueprint>

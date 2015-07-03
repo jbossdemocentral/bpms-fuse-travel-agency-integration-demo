@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <persistence xmlns="http://java.sun.com/xml/ns/persistence"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
              version="2.0">
-
-    <persistence-unit name="travelagency" transaction-type="RESOURCE_LOCAL">
-       
+    <persistence-unit name="mytravelagencyUnit" transaction-type="JTA">
+    	<provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <!--<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>-->
         <class>org.blogdemo.travelagency.hotelbookingservice.Booking</class>
         <class>org.blogdemo.travelagency.hotelbookingservice.CancelBooking</class>
 		<properties>
-        	<property name="openjpa.ConnectionDriverName" value="org.h2.Driver" />
-      		<property name="openjpa.ConnectionURL" value="jdbc:h2:file:~/h2/travelagency;AUTO_SERVER=TRUE" />
-      		<property name="openjpa.ConnectionUserName" value="sa" />
-      		<property name="openjpa.ConnectionPassword" value="" />
-           	<property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='refresh')"/>
-            <property name="openjpa.Log" value="DefaultLevel=INFO, Runtime=INFO, Tool=INFO, SQL=TRACE"/>
-            <property name="openjpa.jdbc.DBDictionary" value="h2(useSchemaName=true)"/>
+        	<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
+      		<property name="hibernate.connection.url" value="jdbc:h2:file:~/h2/travelagency;AUTO_SERVER=TRUE" />
+      		<property name="hibernate.connection.username" value="sa" />
+      		<property name="hibernate.connection.password" value="" />
+      		<property name="hibernate.flushMode" value="FLUSH_AUTO" />
+      		<property name="hibernate.dialect"  value="org.hibernate.dialect.H2Dialect"/>
+         	<property name="hibernate.hbm2ddl.auto" value="update" />
+            <property name="hibernate.show_sql" value="true" />
         </properties>
-
     </persistence-unit>
 </persistence>
+        

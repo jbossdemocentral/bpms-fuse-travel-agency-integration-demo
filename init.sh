@@ -17,14 +17,13 @@ BPM_VERSION=6.1
 
 #Fuse env 
 DEMO_HOME=./target
-FUSE=jboss-fuse-6.1.1.redhat-412
-FUSE_ZIP=jboss-fuse-full-6.1.1.redhat-412.zip
-FUSE_HOME=$DEMO_HOME/$FUSE
+FUSE_ZIP=jboss-fuse-full-6.2.0.redhat-133.zip
+FUSE_HOME=$DEMO_HOME/jboss-fuse-6.2.0.redhat-133
 FUSE_PROJECT=projects/fuseparent
 FUSE_SERVER_CONF=$FUSE_HOME/etc
 FUSE_SERVER_SYSTEM=$FUSE_HOME/system
 FUSE_SERVER_BIN=$FUSE_HOME/bin
-FUSE_VERSION=6.1.1
+FUSE_VERSION=6.2.0
 
 
 
@@ -81,7 +80,7 @@ else
 fi
 
 if [[ -r $SRC_DIR/$FUSE_ZIP || -L $SRC_DIR/$FUSE_ZIP ]]; then
-		echo $DEMO FUSE is present...
+		echo Product sources FUSE are present...
 		echo
 else
 		echo Need to download $FUSE_ZIP package from the Customer Support Portal 
@@ -110,6 +109,7 @@ if [ $? -ne 0 ]; then
 	exit
 fi
 
+echo
 echo "JBoss BPM Suite installer running now..."
 echo
 java -jar $SRC_DIR/$BPMS $SUPPORT_DIR/installation-bpms -variablefile $SUPPORT_DIR/installation-bpms.variables
@@ -117,39 +117,6 @@ java -jar $SRC_DIR/$BPMS $SUPPORT_DIR/installation-bpms -variablefile $SUPPORT_D
 if [ $? -ne 0 ]; then
 	echo Error occurred during BPMS installation!
 	exit
-fi
-
-if [ -x target ]; then
-  # Unzip the JBoss FUSE instance.
-  echo Installing JBoss FUSE $FUSE_VERSION
-  echo
-  unzip -q -d target $SRC_DIR/$FUSE
-else
-	echo
-	echo Missing target directory, stopping installation.
-	echo 
-	exit
-fi
-
-
-# Move the old JBoss instance, if it exists, to the OLD position.
-if [ -x $FUSE_HOME ]; then
-		echo "  - existing JBoss FUSE detected..."
-		echo
-		echo "  - moving existing JBoss FUSE aside..."
-		echo
-		rm -rf $FUSE_HOME.OLD
-		mv $FUSE_HOME $FUSE_HOME.OLD
-
-		# Unzip the JBoss instance.
-		echo Unpacking JBoss FUSE $VERSION
-		echo
-		unzip -q -d $DEMO_HOME $SRC_DIR/$FUSE_ZIP
-else
-		# Unzip the JBoss instance.
-		echo Unpacking new JBoss FUSE...
-		echo
-		unzip -q -d $DEMO_HOME $SRC_DIR/$FUSE_ZIP
 fi
 
 
@@ -164,15 +131,19 @@ cp -r $SUPPORT_DIR/bpm-suite-demo-niogit $SERVER_BIN/.niogit
 echo "  - setting up web services..."
 echo
 mvn clean install -f $PRJ_DIR/pom.xml
-cp -r $PRJ_DIR/acme-demo-flight-service/target/acme-flight-service-1.0.war $SERVER_DIR
-cp -r $PRJ_DIR/acme-demo-hotel-service/target/acme-hotel-service-1.0.war $SERVER_DIR
+
+# Not copying original web serivces as building new Fuse microservices instead.
+#
+#cp -r $PRJ_DIR/acme-demo-flight-service/target/acme-flight-service-1.0.war $SERVER_DIR
+#cp -r $PRJ_DIR/acme-demo-hotel-service/target/acme-hotel-service-1.0.war $SERVER_DIR
 
 echo
 echo "  - adding acmeDataModel-1.0.jar to business-central.war/WEB-INF/lib"
+echo
 cp -r $PRJ_DIR/acme-data-model/target/acmeDataModel-1.0.jar $SERVER_DIR/business-central.war/WEB-INF/lib
 
-echo
 echo "  - deploying external-client-ui-form-1.0.war to EAP deployments directory"
+echo
 cp -r $PRJ_DIR/external-client-ui-form/target/external-client-ui-form-1.0.war $SERVER_DIR/
 
 echo "  - setting up standalone.xml configuration adjustments..."
@@ -197,18 +168,28 @@ cp -f $SUPPORT_DIR/CustomWorkItemHandlers.conf $SERVER_DIR/business-central.war/
 #cp $SUPPORT_DIR/1000_jbpm_demo_h2.sql $SERVER_DIR/dashbuilder.war/WEB-INF/etc/sql
 #echo
 
+
+
+#Start Fuse installation
+if [ -x target ]; then
+  # Unzip the JBoss FUSE instance.
+	echo
+  echo Installing JBoss FUSE $FUSE_VERSION
+  echo
+  unzip -q -d target $SRC_DIR/$FUSE_ZIP
+else
+	echo
+	echo Missing target directory, stopping installation.
+	echo 
+	exit
+fi
+
 #SETUP and INSTALL FUSE services
 echo "  - enabling demo accounts logins in users.properties file..."
 echo
 cp $SUPPORT_DIR/fuse/users.properties $FUSE_SERVER_CONF
 
 
-echo "  - copying a modified org.apache.servicemix.bundles.spring-orm-3.2.9.RELEASE_1.jar file into server..."
-echo
-cp $SUPPORT_DIR/fuse/org.apache.servicemix.bundles.spring-orm-3.2.9.RELEASE_1.jar $FUSE_SERVER_SYSTEM/org/apache/servicemix/bundles/org.apache.servicemix.bundles.spring-orm/3.2.9.RELEASE_1/
-
-echo "  - create h2 database file..."
-echo
 
 if [ -x ~/h2 ]; then
 	rm -rf ~/h2/travelagency.mv.db
@@ -233,8 +214,9 @@ sh $FUSE_SERVER_BIN/start
 
 echo "  - Create Fabric in Fuse"
 echo
-sh $FUSE_SERVER_BIN/client -r 3 -d 10 -u admin -p admin 'fabric:create --wait-for-provisioning'
+sh $FUSE_SERVER_BIN/client -r 3 -d 10 -u admin -p admin 'fabric:create'
      
+sleep 15
 
 #===Test if the fabric is ready=====================================
 echo Testing fabric,retry when not ready
@@ -294,7 +276,7 @@ sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-trav
 
 
 #===Test if the fabric is ready=====================================
-echo Testing containers startd,retry when not ready
+echo Testing containers startd, retry when not ready, please be patient, it will take a while
 while true; do
     if [ $(sh $FUSE_SERVER_BIN/client 'container-list'| grep "success" | wc -l ) -ge 7 ]; then
         break
