@@ -17,13 +17,8 @@ BPM_VERSION=6.1
 
 #Fuse env 
 DEMO_HOME=./target
-<<<<<<< HEAD
-FUSE_ZIP=jboss-fuse-full-6.2.0.redhat-133.zip
-FUSE_HOME=$DEMO_HOME/jboss-fuse-6.2.0.redhat-133
-=======
 FUSE_ZIP=jboss-fuse-full-6.1.1.redhat-412.zip
 FUSE_HOME=$DEMO_HOME/jboss-fuse-6.1.1.redhat-412
->>>>>>> 8402af7aefdcb02710f62d2ee45ea01d64cc0950
 FUSE_PROJECT=projects/fuseparent
 FUSE_SERVER_CONF=$FUSE_HOME/etc
 FUSE_SERVER_SYSTEM=$FUSE_HOME/system
@@ -123,22 +118,6 @@ if [ $? -ne 0 ]; then
 	echo Error occurred during BPMS installation!
 	exit
 fi
-
-<<<<<<< HEAD
-=======
-if [ -x target ]; then
-  # Unzip the JBoss FUSE instance.
-	echo
-  echo Installing JBoss FUSE $FUSE_VERSION
-  echo
-  unzip -q -d target $SRC_DIR/$FUSE_ZIP
-else
-	echo
-	echo Missing target directory, stopping installation.
-	echo 
-	exit
-fi
->>>>>>> 8402af7aefdcb02710f62d2ee45ea01d64cc0950
 
 echo "  - enabling demo accounts role setup in application-roles.properties file..."
 echo
