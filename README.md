@@ -140,8 +140,6 @@ Released versions
 -----------------
 See the tagged releases for the following versions of the product:
 
-- v2.0 - Update to JBoss Fuse 6.2.0, migrating from OpenJPA to Hibernate
-
 - v1.0 - JBoss BPM Suite 6.1 and JBoss Fuse 6.1.1 with micro-service migration from traditional web services for Travel Agency project.
 
 [![Microservices video](https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/blob/master/docs/demo-images/microservices-video.png?raw=true)](https://vimeo.com/ericschabell/bpms-fuse-travel-agency-integration-demo)
