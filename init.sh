@@ -17,8 +17,8 @@ BPM_VERSION=6.1
 
 #Fuse env 
 DEMO_HOME=./target
-FUSE_ZIP=jboss-fuse-full-6.1.1.redhat-412.zip
-FUSE_HOME=$DEMO_HOME/jboss-fuse-6.1.1.redhat-412
+FUSE_ZIP=jboss-fuse-full-6.2.0.redhat-133.zip
+FUSE_HOME=$DEMO_HOME/jboss-fuse-6.2.0.redhat-133
 FUSE_PROJECT=projects/fuseparent
 FUSE_SERVER_CONF=$FUSE_HOME/etc
 FUSE_SERVER_SYSTEM=$FUSE_HOME/system
