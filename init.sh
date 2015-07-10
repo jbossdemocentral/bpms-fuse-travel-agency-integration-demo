@@ -280,7 +280,7 @@ while true; do
     if [ $(sh $FUSE_SERVER_BIN/client 'container-list'| grep "success" | wc -l ) -ge 7 ]; then
         break
     fi
-    sleep 2
+    sleep 10
 done
 #===================================================================
 
