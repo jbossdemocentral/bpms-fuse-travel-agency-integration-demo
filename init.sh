@@ -69,8 +69,7 @@ if [[ $verone -eq 3 ]] && [[ $vertwo -eq 1 ]] && [[ $verthree -ge 1 ]]; then
 elif [[ $verone -eq 3 ]] && [[ $vertwo -eq 2 ]] && [[ $verthree -le 4 ]]; then
 		echo  Correct Maven version $verone.$vertwo.$verthree
 else
-		echo please make sure you have Maven 3.1.1 - 3.2.4 installed, if you wish to continue with your exisiting maven, please use feature install for your Fuse project
-		exit
+		echo please make sure you have Maven 3.1.1 - 3.2.4 installed in order to use fabric maven plugin
 fi
 
 
@@ -248,9 +247,61 @@ cd $FUSE_PROJECT
 
 echo "Start compile and deploy 3 travel agency camel demo project to fuse"
 echo         
-mvn fabric8:deploy 
+#mvn fabric8:deploy 
+mvn clean install
 
-cd ../..
+cd ../.. 
+
+#Creating profiles without using fabric maven plugin
+
+#Create Flight Web Endpoint Porfile
+echo "  - Create Flight Web Endpoint Porfile"
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-create --parents feature-camel --parents mq-client demo-travelagency-webendpoint' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --repository mvn:org.blogdemo.travelagency/features/1.0/xml/features demo-travelagency-webendpoint' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --feature webendpoint-service/0.0.0 demo-travelagency-webendpoint' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --bundle mvn:org.blogdemo.travelagency/webendpoint/1.0 demo-travelagency-webendpoint' &> /dev/null
+
+#Create Hotel Web Endpoint Porfile
+echo "  - Create Hotel Web Endpoint Porfile"
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-create --parents feature-camel --parents mq-client demo-travelagency-hotelwsendpoint' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --repository mvn:org.blogdemo.travelagency/features/1.0/xml/features demo-travelagency-hotelwsendpoint' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --feature webendpoint-service/0.0.0 demo-travelagency-hotelwsendpoint' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --bundle mvn:org.blogdemo.travelagency/hotelwsendpoint/1.0 demo-travelagency-hotelwsendpoint' &> /dev/null
+
+#Create Flight Booking Service Porfile
+echo "  - Create Flight Booking Service Porfile"
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-create --parents feature-camel --parents mq-client demo-travelagency-bookingservice' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --repository mvn:org.blogdemo.travelagency/features/1.0/xml/features demo-travelagency-bookingservice' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --feature booking-service/0.0.0 demo-travelagency-bookingservice' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --bundle mvn:org.blogdemo.travelagency/bookingservice/1.0 demo-travelagency-bookingservice' &> /dev/null
+
+#Create Hotel Booking Service Porfile
+echo "  - Create Hotel Booking Service Porfile"
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-create --parents feature-camel --parents mq-client demo-travelagency-hotelbookingservice' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --repository mvn:org.blogdemo.travelagency/features/1.0/xml/features demo-travelagency-hotelbookingservice' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --feature booking-service/0.0.0 demo-travelagency-hotelbookingservice' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --bundle mvn:org.blogdemo.travelagency/hotelbookingservice/1.0 demo-travelagency-hotelbookingservice' &> /dev/null
+
+#Create Flight Promotion Service Porfile
+echo "  - Create Flight Promotion Service Porfile"
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-create --parents feature-camel --parents mq-client demo-travelagency-promotionflight' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --repository mvn:org.blogdemo.travelagency/features/1.0/xml/features demo-travelagency-promotionflight' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --feature promotion-service/0.0.0 demo-travelagency-promotionflight' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --bundle wrap:mvn:commons-dbcp/commons-dbcp/1.4 demo-travelagency-promotionflight' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --bundle mvn:org.blogdemo.travelagency/promotionflights/1.0 demo-travelagency-promotionflight' &> /dev/null
+
+
+#Create Flight Hotel Service Porfile
+echo "  - Create Flight Hotel Service Porfile"
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-create --parents feature-camel --parents mq-client demo-travelagency-promotionhotel' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --bundle wrap:mvn:commons-dbcp/commons-dbcp/1.4 demo-travelagency-promotionhotel' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --bundle mvn:org.blogdemo.travelagency/promotionhotel/1.0 demo-travelagency-promotionhotel' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --repository mvn:org.blogdemo.travelagency/features/1.0/xml/features demo-travelagency-promotionhotel' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --feature promotion-service/0.0.0 demo-travelagency-promotionhotel' &> /dev/null
+
+
+
+
 
 #===Test if the fabric is ready=====================================
 echo Testing profiles,retry when not ready
@@ -265,29 +316,30 @@ done
 
 
 
-echo "Create containers and add profiles for Flight web service endpoint"
+echo "  - Create containers and add profiles for Flight web service endpoint"
 echo         
-sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-webendpoint root wsflightcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-webendpoint root wsflightcon' &> /dev/null
 
-echo "Create containers and add profiles for Hotel web service endpoint"
+echo "  - Create containers and add profiles for Hotel web service endpoint"
 echo         
-sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-hotelwsendpoint root wshotelcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-hotelwsendpoint root wshotelcon' &> /dev/null
 
-echo "Create containers and add profiles for flight booking service"
+echo "  - Create containers and add profiles for flight booking service"
 echo         
-sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-bookingservice root bookingflightcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-bookingservice root bookingflightcon' &> /dev/null
 
-echo "Create containers and add profiles for hotel booking service"
+echo "  - Create containers and add profiles for hotel booking service"
 echo         
-sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-hotelbookingservice root bookinhotelgcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-hotelbookingservice root bookinhotelgcon' &> /dev/null
 
-echo "Create containers and add profiles flight promotion"
+echo "  - Create containers and add profiles flight promotion"
 echo
-sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-promotionflight root promoflightcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-promotionflight root promoflightcon' &> /dev/null
 
 echo "Create containers and add profiles hotel promotion"
 echo
-sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-promotionhotel root promohotelcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-promotionhotel root promohotelcon' &> /dev/null
+
 
 
 #===Test if the fabric is ready=====================================

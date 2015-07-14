@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+  	<groupId>org.blogdemo.travelagency</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.0</version>
+  </parent>
+  <artifactId>features</artifactId>
+  <packaging>bundle</packaging>
+  
+
+  <name>Travel Agency Features</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>release.fusesource.org</id>
+      <name>FuseSource Release Repository</name>
+      <url>http://repo.fusesource.com/nexus/content/repositories/releases</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+    <repository>
+     <id>ea.fusesource.org</id>
+     <name>FuseSource Community Early Access Release Repository</name>
+     <url>http://repo.fusesource.com/nexus/content/groups/ea</url>
+     <snapshots>
+      <enabled>false</enabled>
+     </snapshots>
+     <releases>
+      <enabled>true</enabled>
+     </releases>
+    </repository>    
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>release.fusesource.org</id>
+      <name>FuseSource Release Repository</name>
+      <url>http://repo.fusesource.com/nexus/content/repositories/releases</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </pluginRepository>
+    <pluginRepository>
+     <id>ea.fusesource.org</id>
+     <name>FuseSource Community Early Access Release Repository</name>
+     <url>http://repo.fusesource.com/nexus/content/groups/ea</url>
+     <snapshots>
+      <enabled>false</enabled>
+     </snapshots>
+     <releases>
+      <enabled>true</enabled>
+     </releases>
+    </pluginRepository>      
+  </pluginRepositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-blueprint</artifactId>
+    </dependency>
+
+    <!-- logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <defaultGoal>install</defaultGoal>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.5.1</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.6</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+      <!-- to generate the MANIFEST-FILE of the bundle -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.3.7</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+           <id>bundle-manifest</id>
+           <phase>process-classes</phase>
+           <goals>
+               <goal>manifest</goal>
+           </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>features</Bundle-SymbolicName>
+            <Private-Package>org.blogdemo.travelagency.features.*</Private-Package>
+            <Import-Package>*</Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+      
+      <!-- Attach the generated features file as an artifact, and publish to the maven repository -->
+	  <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.5</version>
+          <executions>
+            <execution>
+              <id>attach-artifacts</id>
+              <phase>package</phase>
+              <goals>
+                <goal>attach-artifact</goal>
+              </goals>
+              <configuration>
+                <artifacts>
+                  <artifact>
+                    <file>target/classes/features.xml</file>
+                    <type>xml</type>
+                    <classifier>features</classifier>
+                  </artifact>
+                </artifacts>
+              </configuration>
+            </execution>
+          </executions>
+  	  </plugin>
+
+       <!-- to run the example using mvn camel:run -->
+      <plugin>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-maven-plugin</artifactId>
+        <version>2.15.1.redhat-620133</version>
+        <configuration>
+          <useBlueprint>true</useBlueprint>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>
