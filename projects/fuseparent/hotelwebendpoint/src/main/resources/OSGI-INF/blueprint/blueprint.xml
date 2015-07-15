@@ -28,7 +28,7 @@
 	        <property name="configuration" ref="jmsConfig"/>
 	    </bean>
  		<cxf:cxfEndpoint id="hotelEndpoint"
-                   address="http://localhost:8183/cxf/acme-hotel-service-2.0"
+                   address="/acme-hotel-service-2.0"
                    serviceClass="acme.service.soap.hotelws.HotelWS"
                    wsdlURL="wsdl/HotelWS.wsdl"/> 
  
