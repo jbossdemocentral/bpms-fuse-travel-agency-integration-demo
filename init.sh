@@ -59,19 +59,6 @@ echo
 command -v mvn -q >/dev/null 2>&1 || { echo >&2 "Maven is required but not installed yet... aborting."; exit 1; }
 
 
-# Check mvn version must be in 3.1.1 to 3.2.4	
-verone=$(mvn -version | awk '/Apache Maven/{print $3}' | awk -F[=.] '{print $1}')
-vertwo=$(mvn -version | awk '/Apache Maven/{print $3}' | awk -F[=.] '{print $2}')
-verthree=$(mvn -version | awk '/Apache Maven/{print $3}' | awk -F[=.] '{print $3}')     
-     
-if [[ $verone -eq 3 ]] && [[ $vertwo -eq 1 ]] && [[ $verthree -ge 1 ]]; then
-		echo  Correct Maven version $verone.$vertwo.$verthree
-elif [[ $verone -eq 3 ]] && [[ $vertwo -eq 2 ]] && [[ $verthree -le 4 ]]; then
-		echo  Correct Maven version $verone.$vertwo.$verthree
-else
-		echo please make sure you have Maven 3.1.1 - 3.2.4 installed in order to use fabric maven plugin
-fi
-
 
 # make some checks first before proceeding.	
 if [ -r $SRC_DIR/$EAP ] || [ -L $SRC_DIR/$EAP ]; then
@@ -232,12 +219,19 @@ sh $FUSE_SERVER_BIN/client -r 3 -d 10 -u admin -p admin 'fabric:create'
      
 sleep 15
 
+COUNTER=5
 #===Test if the fabric is ready=====================================
-echo Testing fabric,retry when not ready
+echo "  - Testing fabric,retry when not ready"
 while true; do
     if [ $(sh $FUSE_SERVER_BIN/client 'fabric:status'| grep "100%" | wc -l ) -ge 3 ]; then
         break
     fi
+    
+    if [  $COUNTER -le 0 ]; then
+    	echo ERROR, while creating Fabric, please check your Network settings.
+    	break
+    fi
+    let COUNTER=COUNTER-1
     sleep 2
 done
 #===================================================================
@@ -301,14 +295,20 @@ sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --feature promotion-se
 
 
 
-
-
+COUNTER=10
 #===Test if the fabric is ready=====================================
 echo Testing profiles,retry when not ready
 while true; do
     if [ $(sh $FUSE_SERVER_BIN/client 'profile-list'| grep "demo-travelagency" | wc -l ) -ge 6 ]; then
         break
     fi
+    
+    if [  $COUNTER -le 0 ]; then
+    	echo ERROR, while deploying application to JBoss Fuse
+    	break
+    fi
+    
+    let COUNTER=COUNTER-1
     sleep 2
 done
 #===================================================================
@@ -336,18 +336,25 @@ echo "  - Create containers and add profiles flight promotion"
 echo
 sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-promotionflight root promoflightcon' &> /dev/null
 
-echo "Create containers and add profiles hotel promotion"
+echo "  - Create containers and add profiles hotel promotion"
 echo
 sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-promotionhotel root promohotelcon' &> /dev/null
 
 
-
+COUNTER=30
 #===Test if the fabric is ready=====================================
-echo Testing containers startd, retry when not ready, please be patient, it will take a while
+echo "  - Testing containers startd, retry when not ready, please be patient, it will take a while"
 while true; do
     if [ $(sh $FUSE_SERVER_BIN/client 'container-list'| grep "success" | wc -l ) -ge 7 ]; then
         break
     fi
+    
+    if [  $COUNTER -le 0 ]; then
+    	echo ERROR, while installing JBoss Fuse!! Please logon to JBoss Fuse Console for more error logs
+    	break
+    fi
+    
+    let COUNTER=COUNTER-1
     sleep 10
 done
 #===================================================================
