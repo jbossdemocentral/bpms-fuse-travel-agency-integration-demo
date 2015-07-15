@@ -367,9 +367,12 @@ sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop bookinhotelgcon'
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop promoflightcon'
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop promohotelcon'
 
-echo "Stoping Root Container (Fabric)"
+echo "  - Stoping Root Container (Fabric)"
 sh $FUSE_SERVER_BIN/stop
 
+echo "  - stopping any running fuse instances"
+echo
+jps -lm | grep karaf | grep -v grep | awk '{print $1}' | xargs kill -KILL
 
 
 echo
