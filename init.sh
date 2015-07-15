@@ -341,7 +341,7 @@ echo
 sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-promotionhotel root promohotelcon' &> /dev/null
 
 
-COUNTER=30
+COUNTER=5
 #===Test if the fabric is ready=====================================
 echo "  - Testing containers startd, retry when not ready, please be patient, it will take a while"
 while true; do
@@ -350,7 +350,6 @@ while true; do
     fi
     
     if [  $COUNTER -le 0 ]; then
-    	echo ERROR, while installing JBoss Fuse!! Please logon to JBoss Fuse Console for more error logs
     	break
     fi
     
@@ -360,7 +359,7 @@ done
 #===================================================================
 
 
-echo "Stop all containers"
+echo "  - Stop all containers"
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop wsflightcon'
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop wshotelcon'
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop bookingflightcon'
