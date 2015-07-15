@@ -17,7 +17,8 @@
 	<module>promotionflights</module>
 	<module>promotionhotel</module>
 	<module>bookingservice</module>
-	<module>hotelbookingservice</module>	
+	<module>hotelbookingservice</module>
+	<module>features</module>	
   </modules>
   
   <properties>

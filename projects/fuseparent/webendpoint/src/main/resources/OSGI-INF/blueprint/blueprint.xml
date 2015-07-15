@@ -31,7 +31,7 @@
 	
   <bean id="flightBean" class="org.blogdemo.travelagency.ListFlightBean" />
   <cxf:cxfEndpoint id="flightEndpoint"
-                   address="http://localhost:8182/cxf/acme-flight-service-2.0"
+                   address="/acme-flight-service-2.0"
                    serviceClass="com.jboss.soap.service.acmedemo.AcmeDemoInterface"
                    wsdlURL="wsdl/AcmeDemoInterface.wsdl"/>
   

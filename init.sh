@@ -236,12 +236,19 @@ sh $FUSE_SERVER_BIN/client -r 3 -d 10 -u admin -p admin 'fabric:create'
      
 sleep 15
 
+COUNTER=5
 #===Test if the fabric is ready=====================================
-echo Testing fabric,retry when not ready
+echo "  - Testing fabric,retry when not ready"
 while true; do
     if [ $(sh $FUSE_SERVER_BIN/client 'fabric:status'| grep "100%" | wc -l ) -ge 3 ]; then
         break
     fi
+    
+    if [  $COUNTER -le 0 ]; then
+    	echo ERROR, while creating Fabric, please check your Network settings.
+    	break
+    fi
+    let COUNTER=COUNTER-1
     sleep 2
 done
 #===================================================================
@@ -305,14 +312,20 @@ sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --feature promotion-se
 
 
 
-
-
+COUNTER=10
 #===Test if the fabric is ready=====================================
 echo Testing profiles,retry when not ready
 while true; do
     if [ $(sh $FUSE_SERVER_BIN/client 'profile-list'| grep "demo-travelagency" | wc -l ) -ge 6 ]; then
         break
     fi
+    
+    if [  $COUNTER -le 0 ]; then
+    	echo ERROR, while deploying application to JBoss Fuse
+    	break
+    fi
+    
+    let COUNTER=COUNTER-1
     sleep 2
 done
 #===================================================================
@@ -340,24 +353,30 @@ echo "  - Create containers and add profiles flight promotion"
 echo
 sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-promotionflight root promoflightcon' &> /dev/null
 
-echo "Create containers and add profiles hotel promotion"
+echo "  - Create containers and add profiles hotel promotion"
 echo
 sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-promotionhotel root promohotelcon' &> /dev/null
 
 
-
+COUNTER=5
 #===Test if the fabric is ready=====================================
-echo Testing containers startd, retry when not ready, please be patient, it will take a while
+echo "  - Testing containers startd, retry when not ready, please be patient, it will take a while"
 while true; do
     if [ $(sh $FUSE_SERVER_BIN/client 'container-list'| grep "success" | wc -l ) -ge 7 ]; then
         break
     fi
+    
+    if [  $COUNTER -le 0 ]; then
+    	break
+    fi
+    
+    let COUNTER=COUNTER-1
     sleep 10
 done
 #===================================================================
 
 
-echo "Stop all containers"
+echo "  - Stop all containers"
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop wsflightcon'
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop wshotelcon'
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop bookingflightcon'
@@ -365,9 +384,12 @@ sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop bookinhotelgcon'
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop promoflightcon'
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop promohotelcon'
 
-echo "Stoping Root Container (Fabric)"
+echo "  - Stoping Root Container (Fabric)"
 sh $FUSE_SERVER_BIN/stop
 
+echo "  - stopping any running fuse instances"
+echo
+jps -lm | grep karaf | grep -v grep | awk '{print $1}' | xargs kill -KILL
 
 
 echo
