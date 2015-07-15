@@ -58,7 +58,6 @@ echo
 
 command -v mvn -q >/dev/null 2>&1 || { echo >&2 "Maven is required but not installed yet... aborting."; exit 1; }
 
-
 # Check mvn version must be in 3.1.1 to 3.2.4	
 verone=$(mvn -version | awk '/Apache Maven/{print $3}' | awk -F[=.] '{print $1}')
 vertwo=$(mvn -version | awk '/Apache Maven/{print $3}' | awk -F[=.] '{print $2}')
@@ -66,12 +65,17 @@ verthree=$(mvn -version | awk '/Apache Maven/{print $3}' | awk -F[=.] '{print $3
      
 if [[ $verone -eq 3 ]] && [[ $vertwo -eq 1 ]] && [[ $verthree -ge 1 ]]; then
 		echo  Correct Maven version $verone.$vertwo.$verthree
+		echo
 elif [[ $verone -eq 3 ]] && [[ $vertwo -eq 2 ]] && [[ $verthree -le 4 ]]; then
 		echo  Correct Maven version $verone.$vertwo.$verthree
+		echo
 else
-		echo please make sure you have Maven 3.1.1 - 3.2.4 installed in order to use fabric maven plugin
+		echo Please make sure you have Maven 3.1.1 - 3.2.4 installed in order to use fabric maven plugin.
+		echo
+		echo We are unable to run with current installed maven version: $verone.$vertwo.$verthree
+		echo	
+		exit
 fi
-
 
 # make some checks first before proceeding.	
 if [ -r $SRC_DIR/$EAP ] || [ -L $SRC_DIR/$EAP ]; then
