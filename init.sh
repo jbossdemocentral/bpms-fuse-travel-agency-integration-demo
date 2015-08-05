@@ -417,7 +417,7 @@ echo "=    - login to Fuse management console at:                               
 echo "=                                                                                         ="
 echo "=        http://localhost:8181    (u:admin/p:admin)                                       ="
 echo "=                                                                                         ="
-echo "=    - Go to Runtime Tab, start all 6 containers                                          ="
+echo "=    - If not opened, go to Containers tab, start all 6 containers                        ="
 echo "=                                                                                         ="
 echo "=   $DEMO Setup Complete.                 ="
 echo "==========================================================================================="
