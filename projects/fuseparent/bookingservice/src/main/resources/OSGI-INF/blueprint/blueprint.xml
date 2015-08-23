@@ -8,13 +8,9 @@
        http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
    
    	  
-    <bean id="jpaTxManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <jpa:unit unitname="mytravelagencyUnit" property="entityManagerFactory"/>
-    </bean>
-        
-   	<bean id="jpa" class="org.apache.camel.component.jpa.JpaComponent">
+    ﻿<bean id="jpa" class="org.apache.camel.component.jpa.JpaComponent">
        <jpa:unit unitname="mytravelagencyUnit" property="entityManagerFactory"/>
-       <property name="transactionManager" ref="jpaTxManager"/>
+       <tx:transaction method="*" value="Required" />
     </bean>
     
     

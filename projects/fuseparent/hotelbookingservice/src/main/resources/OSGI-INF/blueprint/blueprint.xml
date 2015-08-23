@@ -7,13 +7,10 @@
        http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
        http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
   
-  	<bean id="jpaTxManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <jpa:unit unitname="mytravelagencyUnit" property="entityManagerFactory"/>
-    </bean>
-        
+  	
    	<bean id="jpa" class="org.apache.camel.component.jpa.JpaComponent">
        <jpa:unit unitname="mytravelagencyUnit" property="entityManagerFactory"/>
-       <property name="transactionManager" ref="jpaTxManager"/>
+       <tx:transaction method="*" value="Required" />
     </bean>
    <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
 	  	<property name="brokerURL" value="tcp://localhost:61616"/>
