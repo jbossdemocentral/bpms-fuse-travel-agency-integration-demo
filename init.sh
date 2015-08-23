@@ -232,7 +232,7 @@ sh $FUSE_SERVER_BIN/start
 
 echo "  - Create Fabric in Fuse"
 echo
-sh $FUSE_SERVER_BIN/client -r 3 -d 10 -u admin -p admin 'fabric:create'
+sh $FUSE_SERVER_BIN/client -r 3 -d 10 -u admin -p admin 'fabric:create --resolver manualip --manual-ip 127.0.0.1 '
      
 sleep 15
 
