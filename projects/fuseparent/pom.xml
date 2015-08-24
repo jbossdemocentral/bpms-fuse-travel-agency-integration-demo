@@ -26,7 +26,7 @@
     <jdk.version>1.7</jdk.version>
     <jboss.fuse.bom.version>6.1.0.redhat-379</jboss.fuse.bom.version> 
     <camel.plugin.version>2.12.0.redhat-610379</camel.plugin.version> 
-    <fabric8.version>1.0.0.redhat-412</fabric8.version> 
+    <fabric8.version>1.2.0.redhat-133</fabric8.version> 
   </properties> 
   
    <dependencyManagement>
