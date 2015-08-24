@@ -207,6 +207,13 @@ echo "  - enabling demo accounts logins in users.properties file..."
 echo
 cp $SUPPORT_DIR/fuse/users.properties $FUSE_SERVER_CONF
 
+echo "  - enable camel counter in console in jmx.acl.whitelist.cfg  ..."
+echo
+cp $SUPPORT_DIR/fuse/jmx.acl.whitelist.cfg $FUSE_SERVER_CONF/auth/
+
+echo "  - enable camel counter in console in jmx.acl.whitelist.properties  ..."
+echo
+cp $SUPPORT_DIR/fuse/jmx.acl.whitelist.properties $FUSE_HOME/fabric/import/fabric/profiles/default.profile/
 
 
 if [ -x ~/h2 ]; then
