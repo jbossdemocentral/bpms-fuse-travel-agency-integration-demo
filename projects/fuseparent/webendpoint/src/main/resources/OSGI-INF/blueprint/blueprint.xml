@@ -8,7 +8,6 @@
        http://camel.apache.org/schema/blueprint/cxf http://camel.apache.org/schema/blueprint/cxf/camel-cxf.xsd
        http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
 
-  	
   		<bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
         	<property name="brokerURL" value="tcp://localhost:61616"/>
 	    	<property name="userName" value="admin"/>
@@ -29,8 +28,8 @@
 	        <property name="configuration" ref="jmsConfig"/>
 	    </bean>
 	
-  <bean id="flightBean" class="org.blogdemo.travelagency.ListFlightBean" />
-  <cxf:cxfEndpoint id="flightEndpoint"
+  		<bean id="flightBean" class="org.blogdemo.travelagency.ListFlightBean" />
+  		<cxf:cxfEndpoint id="flightEndpoint"
                    address="/acme-flight-service-2.0"
                    serviceClass="com.jboss.soap.service.acmedemo.AcmeDemoInterface"
                    wsdlURL="wsdl/AcmeDemoInterface.wsdl"/>
@@ -38,7 +37,7 @@
   <camelContext trace="false" id="blueprintContext" xmlns="http://camel.apache.org/schema/blueprint">
     <route id="cxfwsRoute">
         <from uri="cxf:bean:flightEndpoint"/>
-        <log message="${header.operationName}"/>
+        <log message="Operation Name ==&gt; ${header.operationName}"/>
         <recipientList>
             <simple>direct://${header.operationName}</simple>
         </recipientList>
@@ -46,19 +45,18 @@
     <route id="bookFlightsRoute">
         <from uri="direct://bookFlights"/>
         <log message="bookFlights Body:[${body}]"/>
-        <convertBodyTo type="java.lang.String" />
-        <to uri="activemq:queue:booking" pattern="InOut"/>
+        <convertBodyTo type="java.lang.String"/>
+        <to uri="activemq:queue:booking"/>
         <log message="return bookFlights Body:[${body}]"/>
     </route>
     <route id="cancelBookingRoute">
         <from uri="direct://cancelBooking"/>
         <log message="cancelBooking Body:[${body}]"/>
-        <convertBodyTo type="java.lang.String" />
-        <to uri="activemq:queue:cancelbooking" pattern="InOut"/>
+        <convertBodyTo type="java.lang.String"/>
+        <to uri="activemq:queue:cancelbooking"/>
         <convertBodyTo type="java.lang.Integer"/>
         <log message="return cancelBookFlights Body:[${body}]"/>
     </route>
-    
     <route id="listAvailablePlanesRoute">
         <from uri="direct://listAvailablePlanes"/>
         <convertBodyTo type="com.jboss.soap.service.acmedemo.FlightRequest"/>
@@ -66,12 +64,12 @@
         <marshal>
             <json library="Jackson"/>
         </marshal>
-        <to uri="activemq:queue:requestflight" pattern="InOut"/>
+        <to uri="activemq:queue:requestflight"/>
         <unmarshal>
-            <json unmarshalTypeName="java.util.HashMap" library="Jackson"/>
+            <json library="Jackson" unmarshalTypeName="java.util.HashMap"/>
         </unmarshal>
         <log message="Body:[${body}]"/>
-        <bean method="getFlights" ref="flightBean"/>
+        <bean ref="flightBean" method="getFlights"/>
     </route>
 </camelContext>
 
