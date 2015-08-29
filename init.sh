@@ -210,7 +210,7 @@ echo
 sh $FUSE_SERVER_BIN/start
 
 
-
+sleep 10 #Creating a delay purposely between the previous and next command
 echo "  - Create Fabric in Fuse"
 echo
 sh $FUSE_SERVER_BIN/client -r 3 -d 10 -u admin -p admin 'fabric:create'
@@ -232,7 +232,7 @@ cd $FUSE_PROJECT
 
 echo "Start compile and deploy 3 travel agency camel demo project to fuse"
 echo         
-mvn fabric8:deploy 
+mvn clean fabric8:deploy 
 
 cd ../..
 
@@ -251,27 +251,27 @@ done
 
 echo "Create containers and add profiles for Flight web service endpoint"
 echo         
-sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-webendpoint root wsflightcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --jvm-opts "-Xms32m -Xmx128m" --profile demo-travelagency-webendpoint root wsflightcon'
 
 echo "Create containers and add profiles for Hotel web service endpoint"
 echo         
-sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-hotelwsendpoint root wshotelcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --jvm-opts "-Xms32m -Xmx128m" --profile demo-travelagency-hotelwsendpoint root wshotelcon'
 
 echo "Create containers and add profiles for flight booking service"
 echo         
-sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-bookingservice root bookingflightcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --jvm-opts "-Xms32m -Xmx128m" --profile demo-travelagency-bookingservice root bookingflightcon'
 
 echo "Create containers and add profiles for hotel booking service"
 echo         
-sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-hotelbookingservice root bookinhotelgcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --jvm-opts "-Xms32m -Xmx128m" --profile demo-travelagency-hotelbookingservice root bookinhotelgcon'
 
 echo "Create containers and add profiles flight promotion"
 echo
-sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-promotionflight root promoflightcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --jvm-opts "-Xms32m -Xmx128m" --profile demo-travelagency-promotionflight root promoflightcon'
 
 echo "Create containers and add profiles hotel promotion"
 echo
-sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-promotionhotel root promohotelcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --jvm-opts "-Xms32m -Xmx128m" --profile demo-travelagency-promotionhotel root promohotelcon'
 
 
 #===Test if the fabric is ready=====================================
