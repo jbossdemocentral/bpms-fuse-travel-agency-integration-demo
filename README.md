@@ -35,7 +35,7 @@ Install on your machine
 8. Under Services -> Containers tab, you will see 6 containers, select and start each one.
 ![Fuse Under Runtime](https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse01-underruntime.png?raw=true)
 
-9. Check if web services are avaiable under Services -> APIs tab.
+9. Check if web services are available under Services -> APIs tab.
 ![Fuse WS APIs](https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse02-underapis.png?raw=true)
 
 10. Enjoy the demo!
