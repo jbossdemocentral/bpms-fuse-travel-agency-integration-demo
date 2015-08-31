@@ -32,7 +32,7 @@ Install on your machine
 
 7. Login to Fuse management console at:  http://localhost:8181    (u:admin/p:admin).
 
-8. Under Runtime tab, you will see 6 containers, select and start them all.  
+8. Under Runtime tab, you will see 6 containers, select and start each one.
 ![Fuse Under Runtime](https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse01-underruntime.png?raw=true)
 
 9. Check if web services are avaiable under APIs tab.
@@ -139,6 +139,8 @@ Supporting Articles
 Released versions
 -----------------
 See the tagged releases for the following versions of the product:
+
+- v1.1 - JBoss BPM Suite 6.1 and JBoss Fuse 6.2 with micro-service migration from traditional web services for Travel Agency project.
 
 - v1.0 - JBoss BPM Suite 6.1 and JBoss Fuse 6.1.1 with micro-service migration from traditional web services for Travel Agency project.
 

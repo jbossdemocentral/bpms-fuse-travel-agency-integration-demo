@@ -17,8 +17,8 @@ BPM_VERSION=6.1
 
 #Fuse env 
 DEMO_HOME=./target
-FUSE_ZIP=jboss-fuse-full-6.1.1.redhat-412.zip
-FUSE_HOME=$DEMO_HOME/jboss-fuse-6.1.1.redhat-412
+FUSE_ZIP=jboss-fuse-full-6.2.0.redhat-133.zip
+FUSE_HOME=$DEMO_HOME/jboss-fuse-6.2.0.redhat-133
 FUSE_PROJECT=projects/fuseparent
 FUSE_SERVER_CONF=$FUSE_HOME/etc
 FUSE_SERVER_SYSTEM=$FUSE_HOME/system
@@ -57,6 +57,25 @@ echo "##########################################################################
 echo
 
 command -v mvn -q >/dev/null 2>&1 || { echo >&2 "Maven is required but not installed yet... aborting."; exit 1; }
+
+# Check mvn version must be in 3.1.1 to 3.2.4	
+verone=$(mvn -version | awk '/Apache Maven/{print $3}' | awk -F[=.] '{print $1}')
+vertwo=$(mvn -version | awk '/Apache Maven/{print $3}' | awk -F[=.] '{print $2}')
+verthree=$(mvn -version | awk '/Apache Maven/{print $3}' | awk -F[=.] '{print $3}')     
+     
+if [[ $verone -eq 3 ]] && [[ $vertwo -eq 1 ]] && [[ $verthree -ge 1 ]]; then
+		echo  Correct Maven version $verone.$vertwo.$verthree
+		echo
+elif [[ $verone -eq 3 ]] && [[ $vertwo -eq 2 ]] && [[ $verthree -le 4 ]]; then
+		echo  Correct Maven version $verone.$vertwo.$verthree
+		echo
+else
+		echo Please make sure you have Maven 3.1.1 - 3.2.4 installed in order to use fabric maven plugin.
+		echo
+		echo We are unable to run with current installed maven version: $verone.$vertwo.$verthree
+		echo	
+		exit
+fi
 
 # make some checks first before proceeding.	
 if [ -r $SRC_DIR/$EAP ] || [ -L $SRC_DIR/$EAP ]; then
@@ -188,6 +207,13 @@ echo "  - enabling demo accounts logins in users.properties file..."
 echo
 cp $SUPPORT_DIR/fuse/users.properties $FUSE_SERVER_CONF
 
+echo "  - enable camel counter in console in jmx.acl.whitelist.cfg  ..."
+echo
+cp $SUPPORT_DIR/fuse/jmx.acl.whitelist.cfg $FUSE_SERVER_CONF/auth/
+
+echo "  - enable camel counter in console in jmx.acl.whitelist.properties  ..."
+echo
+cp $SUPPORT_DIR/fuse/jmx.acl.whitelist.properties $FUSE_HOME/fabric/import/fabric/profiles/default.profile/
 
 
 if [ -x ~/h2 ]; then
@@ -213,16 +239,23 @@ sh $FUSE_SERVER_BIN/start
 
 echo "  - Create Fabric in Fuse"
 echo
-sh $FUSE_SERVER_BIN/client -r 3 -d 10 -u admin -p admin 'fabric:create'
+sh $FUSE_SERVER_BIN/client -r 3 -d 10 -u admin -p admin 'fabric:create --resolver manualip --manual-ip 127.0.0.1 '
      
 sleep 15
 
+COUNTER=5
 #===Test if the fabric is ready=====================================
-echo Testing fabric,retry when not ready
+echo "  - Testing fabric,retry when not ready"
 while true; do
     if [ $(sh $FUSE_SERVER_BIN/client 'fabric:status'| grep "100%" | wc -l ) -ge 3 ]; then
         break
     fi
+    
+    if [  $COUNTER -le 0 ]; then
+    	echo ERROR, while creating Fabric, please check your Network settings.
+    	break
+    fi
+    let COUNTER=COUNTER-1
     sleep 2
 done
 #===================================================================
@@ -232,16 +265,74 @@ cd $FUSE_PROJECT
 
 echo "Start compile and deploy 3 travel agency camel demo project to fuse"
 echo         
-mvn fabric8:deploy 
+#mvn fabric8:deploy 
+mvn clean install
 
-cd ../..
+cd ../.. 
 
+#Creating profiles without using fabric maven plugin
+
+#Create Flight Web Endpoint Porfile
+echo "  - Create Flight Web Endpoint Porfile"
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-create --parents feature-camel --parents mq-client demo-travelagency-webendpoint' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --repository mvn:org.blogdemo.travelagency/features/1.0/xml/features demo-travelagency-webendpoint' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --feature webendpoint-service/0.0.0 demo-travelagency-webendpoint' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --bundle mvn:org.blogdemo.travelagency/webendpoint/1.0 demo-travelagency-webendpoint' &> /dev/null
+
+#Create Hotel Web Endpoint Porfile
+echo "  - Create Hotel Web Endpoint Porfile"
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-create --parents feature-camel --parents mq-client demo-travelagency-hotelwsendpoint' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --repository mvn:org.blogdemo.travelagency/features/1.0/xml/features demo-travelagency-hotelwsendpoint' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --feature webendpoint-service/0.0.0 demo-travelagency-hotelwsendpoint' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --bundle mvn:org.blogdemo.travelagency/hotelwsendpoint/1.0 demo-travelagency-hotelwsendpoint' &> /dev/null
+
+#Create Flight Booking Service Porfile
+echo "  - Create Flight Booking Service Porfile"
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-create --parents feature-camel --parents mq-client demo-travelagency-bookingservice' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --repository mvn:org.blogdemo.travelagency/features/1.0/xml/features demo-travelagency-bookingservice' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --feature booking-service/0.0.0 demo-travelagency-bookingservice' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --bundle mvn:org.blogdemo.travelagency/bookingservice/1.0 demo-travelagency-bookingservice' &> /dev/null
+
+#Create Hotel Booking Service Porfile
+echo "  - Create Hotel Booking Service Porfile"
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-create --parents feature-camel --parents mq-client demo-travelagency-hotelbookingservice' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --repository mvn:org.blogdemo.travelagency/features/1.0/xml/features demo-travelagency-hotelbookingservice' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --feature booking-service/0.0.0 demo-travelagency-hotelbookingservice' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --bundle mvn:org.blogdemo.travelagency/hotelbookingservice/1.0 demo-travelagency-hotelbookingservice' &> /dev/null
+
+#Create Flight Promotion Service Porfile
+echo "  - Create Flight Promotion Service Porfile"
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-create --parents feature-camel --parents mq-client demo-travelagency-promotionflight' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --repository mvn:org.blogdemo.travelagency/features/1.0/xml/features demo-travelagency-promotionflight' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --feature promotion-service/0.0.0 demo-travelagency-promotionflight' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --bundle wrap:mvn:commons-dbcp/commons-dbcp/1.4 demo-travelagency-promotionflight' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --bundle mvn:org.blogdemo.travelagency/promotionflights/1.0 demo-travelagency-promotionflight' &> /dev/null
+
+
+#Create Flight Hotel Service Porfile
+echo "  - Create Flight Hotel Service Porfile"
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-create --parents feature-camel --parents mq-client demo-travelagency-promotionhotel' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --bundle wrap:mvn:commons-dbcp/commons-dbcp/1.4 demo-travelagency-promotionhotel' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --bundle mvn:org.blogdemo.travelagency/promotionhotel/1.0 demo-travelagency-promotionhotel' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --repository mvn:org.blogdemo.travelagency/features/1.0/xml/features demo-travelagency-promotionhotel' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --feature promotion-service/0.0.0 demo-travelagency-promotionhotel' &> /dev/null
+
+
+
+COUNTER=10
 #===Test if the fabric is ready=====================================
 echo Testing profiles,retry when not ready
 while true; do
     if [ $(sh $FUSE_SERVER_BIN/client 'profile-list'| grep "demo-travelagency" | wc -l ) -ge 6 ]; then
         break
     fi
+    
+    if [  $COUNTER -le 0 ]; then
+    	echo ERROR, while deploying application to JBoss Fuse
+    	break
+    fi
+    
+    let COUNTER=COUNTER-1
     sleep 2
 done
 #===================================================================
@@ -249,43 +340,50 @@ done
 
 
 
-echo "Create containers and add profiles for Flight web service endpoint"
+echo "  - Create containers and add profiles for Flight web service endpoint"
 echo         
-sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-webendpoint root wsflightcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-webendpoint root wsflightcon' &> /dev/null
 
-echo "Create containers and add profiles for Hotel web service endpoint"
+echo "  - Create containers and add profiles for Hotel web service endpoint"
 echo         
-sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-hotelwsendpoint root wshotelcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-hotelwsendpoint root wshotelcon' &> /dev/null
 
-echo "Create containers and add profiles for flight booking service"
+echo "  - Create containers and add profiles for flight booking service"
 echo         
-sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-bookingservice root bookingflightcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-bookingservice root bookingflightcon' &> /dev/null
 
-echo "Create containers and add profiles for hotel booking service"
+echo "  - Create containers and add profiles for hotel booking service"
 echo         
-sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-hotelbookingservice root bookinhotelgcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-hotelbookingservice root bookinhotelgcon' &> /dev/null
 
-echo "Create containers and add profiles flight promotion"
+echo "  - Create containers and add profiles flight promotion"
 echo
-sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-promotionflight root promoflightcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-promotionflight root promoflightcon' &> /dev/null
 
-echo "Create containers and add profiles hotel promotion"
+echo "  - Create containers and add profiles hotel promotion"
 echo
-sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-promotionhotel root promohotelcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-promotionhotel root promohotelcon' &> /dev/null
 
 
+COUNTER=5
 #===Test if the fabric is ready=====================================
-echo Testing containers startd, retry when not ready, please be patient, it will take a while
+echo "  - Testing containers startd, retry when not ready, please be patient, it will take a while"
 while true; do
     if [ $(sh $FUSE_SERVER_BIN/client 'container-list'| grep "success" | wc -l ) -ge 7 ]; then
         break
     fi
-    sleep 2
+    
+    if [  $COUNTER -le 0 ]; then
+    	break
+    fi
+    
+    let COUNTER=COUNTER-1
+    sleep 10
 done
 #===================================================================
 
 
-echo "Stop all containers"
+echo "  - Stop all containers"
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop wsflightcon'
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop wshotelcon'
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop bookingflightcon'
@@ -293,9 +391,12 @@ sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop bookinhotelgcon'
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop promoflightcon'
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop promohotelcon'
 
-echo "Stoping Root Container (Fabric)"
+echo "  - Stoping Root Container (Fabric)"
 sh $FUSE_SERVER_BIN/stop
 
+echo "  - stopping any running fuse instances"
+echo
+jps -lm | grep karaf | grep -v grep | awk '{print $1}' | xargs kill -KILL
 
 
 echo
@@ -323,7 +424,7 @@ echo "=    - login to Fuse management console at:                               
 echo "=                                                                                         ="
 echo "=        http://localhost:8181    (u:admin/p:admin)                                       ="
 echo "=                                                                                         ="
-echo "=    - Go to Runtime Tab, start all 6 containers                                          ="
+echo "=    - If not opened, go to Containers tab, start all 6 containers                        ="
 echo "=                                                                                         ="
 echo "=   $DEMO Setup Complete.                 ="
 echo "==========================================================================================="

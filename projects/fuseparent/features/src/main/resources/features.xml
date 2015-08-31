@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="TravelAgencyRepo" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+
+  <repository>mvn:org.apache.camel.karaf/apache-camel/2.15.1.redhat-620133/xml/features</repository>
+  <repository>mvn:org.apache.activemq/activemq-karaf/5.11.0.redhat-620133/xml/features</repository>
+  <repository>mvn:org.apache.activemq/activemq-karaf/5.11.0.redhat-620133/xml/features-core</repository>
+  <repository>mvn:org.apache.cxf.karaf/apache-cxf/3.0.4.redhat-620133/xml/features</repository>
+  <repository>mvn:io.fabric8/fabric8-karaf/1.2.0.redhat-133/xml/features</repository>
+  <repository>mvn:org.apache.karaf.assemblies.features/enterprise/2.4.0.redhat-620133/xml/features</repository>
+  
+  <!--Features needed for both hotel and flight booking service  -->
+  <feature name="booking-service" resolver="(obr)">
+  	<bundle start-level="20">mvn:com.h2database/h2/1.4.181</bundle>
+    <feature version="2.15.1.redhat-620133">camel-jpa</feature>
+    <feature version="5.11.0.redhat-620133">activemq-camel</feature>
+    <feature version="4.2.19.Final-redhat-1">hibernate</feature>
+    <feature version="2.4.0.redhat-620133">jdbc</feature>
+  </feature>
+  
+   <!--Features needed for both hotel and flight promotion service  -->
+  <feature name="promotion-service" resolver="(obr)">
+    <bundle start-level="20">mvn:com.h2database/h2/1.4.181</bundle>
+    <bundle start-level="30">wrap:mvn:commons-dbcp/commons-dbcp/1.4</bundle>
+  	<feature version="2.15.1.redhat-620133">camel-jdbc</feature>
+    <feature version="5.11.0.redhat-620133">activemq-camel</feature>
+    <feature version="2.15.1.redhat-620133">camel-jackson</feature>
+  </feature>
+  
+  <!--Features needed for both hotel and flight web endpoint service  -->
+  <feature name="webendpoint-service" resolver="(obr)">
+    <feature version="2.15.1.redhat-620133">camel-cxf</feature>
+    <feature version="5.11.0.redhat-620133">activemq-camel</feature>
+    <feature version="2.15.1.redhat-620133">camel-jackson</feature>
+    <feature version="2.15.1.redhat-620133">camel-jms</feature>
+    <feature version="3.0.4.redhat-620133">cxf-http-jetty</feature>
+    <feature version="1.2.0.redhat-133">fabric-cxf-registry</feature>
+    <feature version="1.2.0.redhat-133">fabric-cxf</feature>
+    <feature version="1.2.0.redhat-133">fabric-zookeeper</feature>
+    <feature version="1.2.0.redhat-133">fabric-groups</feature>
+  </feature>
+</features>

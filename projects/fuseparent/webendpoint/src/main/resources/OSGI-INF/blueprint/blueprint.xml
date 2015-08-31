@@ -26,8 +26,8 @@
 
 	    <bean id="activemq"  class="org.apache.activemq.camel.component.ActiveMQComponent">
 	        <property name="configuration" ref="jmsConfig"/>
-	    </bean>	
-	    
+	    </bean>
+	
   		<bean id="flightBean" class="org.blogdemo.travelagency.ListFlightBean" />
   		<cxf:cxfEndpoint id="flightEndpoint"
                    address="/acme-flight-service-2.0"
