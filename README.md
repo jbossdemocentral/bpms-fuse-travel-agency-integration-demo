@@ -32,10 +32,10 @@ Install on your machine
 
 7. Login to Fuse management console at:  http://localhost:8181    (u:admin/p:admin).
 
-8. Under Runtime tab, you will see 6 containers, select and start each one.
+8. Under Services -> Containers tab, you will see 6 containers, select and start each one.
 ![Fuse Under Runtime](https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse01-underruntime.png?raw=true)
 
-9. Check if web services are avaiable under APIs tab.
+9. Check if web services are avaiable under Services -> APIs tab.
 ![Fuse WS APIs](https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo/blob/master/docs/fuse-images/fuse02-underapis.png?raw=true)
 
 10. Enjoy the demo!
