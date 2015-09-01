@@ -265,8 +265,7 @@ cd $FUSE_PROJECT
 
 echo "Start compile and deploy 3 travel agency camel demo project to fuse"
 echo         
-#mvn fabric8:deploy 
-mvn clean install
+mvn fabric8:deploy 
 
 cd ../.. 
 
