@@ -37,7 +37,8 @@ create table cancelbooking(
 select * from cancelbooking;
 
 
-
+SELECT * from avaliableflights where departure='London' and destination='Taipei'             
+and departuretime>='' and arrivaltime<='2015-12-01 00:00:00'
 
 
 

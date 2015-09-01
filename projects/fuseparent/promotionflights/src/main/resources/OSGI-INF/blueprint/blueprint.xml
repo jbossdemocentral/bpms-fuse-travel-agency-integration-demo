@@ -14,7 +14,12 @@
   		<property name="password" value=""/>
   	</bean>
   	
-
+  	<bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
+	  	<property name="brokerURL" value="tcp://localhost:61616"/>
+	    <property name="userName" value="admin"/>
+	    <property name="password" value="admin"/>
+  	</bean>
+ 
  	<bean id="dataProcessor" class="org.blogdemo.travelagency.promtionflights.DataProcessor" />
  	<bean id="randomFlight" class="org.blogdemo.travelagency.promtionflights.RandomFlightBean" />
  

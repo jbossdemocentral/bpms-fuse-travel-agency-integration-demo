@@ -9,16 +9,18 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
 @Entity
-@NamedQuery(name = "queryByIda", query = "select cancelbooking from Cancelbooking cancelbooking where cancelbooking.bookingid=:bookingid " , lockMode = PESSIMISTIC_WRITE)
-@Table(name = "cancelbooking")
-public class CancelBooking {
+@NamedQuery(name = "queryById", query = "select booking from BookingVO booking where booking.bookingid=:bookingid " , lockMode = PESSIMISTIC_WRITE)
+@Table(name = "booking")
+public class BookingVO {
+	
 	@Column(name = "bookingid")
 	@Id
-	public String bookingid;
+	protected String bookingid;
 	
 	@Column(name = "recieveDate")
-	public Date recieveDate;
+	protected Date recieveDate;
 
 	public String getBookingid() {
 		return bookingid;

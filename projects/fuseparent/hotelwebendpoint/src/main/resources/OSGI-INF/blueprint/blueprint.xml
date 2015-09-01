@@ -38,6 +38,9 @@
   <route>
     <from uri="cxf:bean:hotelEndpoint"/>
     <log message="${header.operationName}"/>
+    <setHeader headerName="operationName">
+      <constant>getAvailableHotel</constant>
+    </setHeader>
     <recipientList>
       <simple>direct:${header.operationName}</simple>
     </recipientList>

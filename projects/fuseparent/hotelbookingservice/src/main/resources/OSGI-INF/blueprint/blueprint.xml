@@ -7,25 +7,11 @@
        xsi:schemaLocation="
        http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
        http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
-  
+ 
    	<bean id="jpa" class="org.apache.camel.component.jpa.JpaComponent">
        <jpa:unit unitname="mytravelagencyUnit" property="entityManagerFactory"/>
        <tx:transaction method="*" value="Required" />
     </bean>
-    
-    <bean id="jpaTxManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactory"/>
-    </bean>
-    
-    <bean id="entityManagerFactoryBean" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean" init-method="afterPropertiesSet">   
-       <property name="persistenceUnitName" value="travelagency"/>
-        <property name="jpaDialect">
-        	<bean class="org.springframework.orm.jpa.vendor.OpenJpaDialect" />
-    	</property>
-   </bean>
-   
-   <bean id="entityManagerFactory" factory-ref="entityManagerFactoryBean" factory-method="getObject" />
-   
    <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
 	  	<property name="brokerURL" value="tcp://localhost:61616"/>
 	    <property name="userName" value="admin"/>
@@ -36,7 +22,7 @@
   <camelContext trace="false" xmlns="http://camel.apache.org/schema/blueprint">
     <route id="hotelBookingRoute">
         <from uri="activemq:queue:hotelbooking"/>
-        <bean ref="bookingService" method="createBooking"/>
+        <bean method="createBooking" ref="bookingService"/>
         <to uri="jpa://org.blogdemo.travelagency.hotelbookingservice.Booking?consumeDelete=false"/>
         <log message="${body}"/>
         <setBody>
@@ -45,13 +31,13 @@
     </route>
     <route id="cancelHotelBookingRoute">
         <from uri="activemq:queue:cancelhotelbooking"/>
-        <bean ref="params" method="put('bookingid',${body})"/>
-        <pollEnrich uri="jpa://org.blogdemo.travelagency.hotelbookingservice.Booking?consumeDelete=false&amp;consumer.namedQuery=queryHotelBookingById&amp;consumer.parameters=#params" timeout="2000"/>
+        <bean method="put('bookingid',${body})" ref="params"/>
+        <pollEnrich timeout="2000" uri="jpa://org.blogdemo.travelagency.hotelbookingservice.Booking?consumeDelete=false&amp;consumer.namedQuery=queryHotelBookingById&amp;consumer.parameters=#params"/>
         <log message="try:[${body}]"/>
         <choice>
             <when>
                 <simple>${body} != null</simple>
-                <bean ref="bookingService" method="createCancelBooking(${body.bookingid})"/>
+                <bean method="createCancelBooking(${body.bookingid})" ref="bookingService"/>
                 <to uri="jpa://org.blogdemo.travelagency.hotelbookingservice.CancelBooking?consumeDelete=false"/>
                 <setBody>
                     <simple>bean:bookingService?method=cancelCharge</simple>

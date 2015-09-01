@@ -11,10 +11,10 @@ public class BookingService {
 	private SecureRandom secureRandom = new SecureRandom();
 
 
-	public Booking createBooking(String someStringFromBPMS){
+	public BookingVO createBooking(String someStringFromBPMS){
 		Calendar cal = Calendar.getInstance();
 		
-		Booking booking = new Booking();
+		BookingVO booking = new BookingVO();
 		booking.setBookingid(genBookingId());
 		booking.setRecieveDate(cal.getTime());
 		
@@ -28,10 +28,10 @@ public class BookingService {
 		return param;
 	}
 	
-	public CancelBooking createCancelBooking(String id){
+	public CancelBookingVO createCancelBooking(String id){
 		Calendar cal = Calendar.getInstance();
 		
-		CancelBooking cancelbooking = new CancelBooking();
+		CancelBookingVO cancelbooking = new CancelBookingVO();
 		cancelbooking.setBookingid(id);
 		cancelbooking.setRecieveDate(cal.getTime());
 		
