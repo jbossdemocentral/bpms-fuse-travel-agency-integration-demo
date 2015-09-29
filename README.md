@@ -98,42 +98,43 @@ Booking a trip to Edinburgh (just one scenario)
 
 Supporting Articles
 -------------------
-[A Microservices Migration Story with JBoss BPM Travel Agency (video)](http://www.schabell.org/2015/05/microservices-migration-story-with-jboss-bpm-travel-agency-video.html)
+- [7 Steps to Your First Process with JBoss BPM Suite Starter	Kit](http://www.schabell.org/2015/08/7-steps-first-process-jboss-bpmsuite-starter-kit.html)
 
-[Integration Project- Micro Services Migration Story with JBoss BPM Travel Agency - Part Five](http://wei-meilin.blogspot.tw/2015/05/integration-project-micro-services_22.html)
+- [A Microservices Migration Story with JBoss BPM Travel Agency (video)](http://www.schabell.org/2015/05/microservices-migration-story-with-jboss-bpm-travel-agency-video.html)
 
-[Integration Project- Micro Services Migration Story with JBoss BPM Travel Agency - Part Four](http://wei-meilin.blogspot.tw/2015/05/integration-project-micro-services_19.html)
+- [Integration Project- Micro Services Migration Story with JBoss BPM Travel Agency - Part Five](http://wei-meilin.blogspot.tw/2015/05/integration-project-micro-services_22.html)
 
-[Integration Project- Micro Services Migration Story with JBoss BPM Travel Agency - Part Three](http://wei-meilin.blogspot.nl/2015/05/integration-project-micro-services_15.html)
+- [Integration Project- Micro Services Migration Story with JBoss BPM Travel Agency - Part Four](http://wei-meilin.blogspot.tw/2015/05/integration-project-micro-services_19.html)
 
-[Integration Project- Micro Services Migration Story with JBoss BPM Travel Agency - Part Two](http://wei-meilin.blogspot.nl/2015/05/integration-project-micro-services_11.html)
+- [Integration Project- Micro Services Migration Story with JBoss BPM Travel Agency - Part Three](http://wei-meilin.blogspot.nl/2015/05/integration-project-micro-services_15.html)
 
-[Integration Project- Micro Services Migration Story with JBoss BPM Travel Agency - Part One](http://wei-meilin.blogspot.tw/2015/05/integration-project-micro-services.html)
+- [Integration Project- Micro Services Migration Story with JBoss BPM Travel Agency - Part Two](http://wei-meilin.blogspot.nl/2015/05/integration-project-micro-services_11.html)
 
-[A Micro Services Migration Story with JBoss BPM Travel Agency](http://www.schabell.org/2015/05/micro-services-migration-story-with-jboss-bpm-travel-agency.html)
+- [Integration Project- Micro Services Migration Story with JBoss BPM Travel Agency - Part One](http://wei-meilin.blogspot.tw/2015/05/integration-project-micro-services.html)
 
-[Online Free PEX Webinar - A Guide to Modern BPM Tools](http://www.schabell.org/2015/04/online-free-pex-webinar-guide-to-modern-bpm-tools.html)
+- [A Micro Services Migration Story with JBoss BPM Travel Agency](http://www.schabell.org/2015/05/micro-services-migration-story-with-jboss-bpm-travel-agency.html)
 
-[Quickest Way into the Clouds with JBoss BPM Travel Agency](http://www.schabell.org/2015/02/into-clouds-with-jboss-bpm-travel-agency.html)
+- [Online Free PEX Webinar - A Guide to Modern BPM Tools](http://www.schabell.org/2015/04/online-free-pex-webinar-guide-to-modern-bpm-tools.html)
 
-[Webinar - How to Excite the Travel Industry with a BPM Story](http://www.schabell.org/2015/02/webinar-how-to-excite-travel-industry.html)
+- [Quickest Way into the Clouds with JBoss BPM Travel Agency](http://www.schabell.org/2015/02/into-clouds-with-jboss-bpm-travel-agency.html)
 
-[Slides from webinar - How to excite the travel industry with a BPM story](http://www.schabell.org/2015/02/slides-webinar-jboss-bpm-travel-agency.html)
+- [Webinar - How to Excite the Travel Industry with a BPM Story](http://www.schabell.org/2015/02/webinar-how-to-excite-travel-industry.html)
 
-[How to fly with the JBoss BPM Travel Agency (video 4 of 4)](http://www.schabell.org/2015/02/how-to-fly-with-jboss-bpm-travel-agency-part4.html)
+- [Slides from webinar - How to excite the travel industry with a BPM story](http://www.schabell.org/2015/02/slides-webinar-jboss-bpm-travel-agency.html)
 
-[How to fly with the JBoss BPM Travel Agency (video 3 of 4)](http://www.schabell.org/2015/01/how-to-fly-with-jboss-bpm-travel-agency-part3.html)
+- [How to fly with the JBoss BPM Travel Agency (video 4 of 4)](http://www.schabell.org/2015/02/how-to-fly-with-jboss-bpm-travel-agency-part4.html)
 
-[How to fly with the JBoss BPM Travel Agency (video 2 of 4)](http://www.schabell.org/2015/01/how-to-fly-with-jboss-bpm-travel-agency-part2.html)
+- [How to fly with the JBoss BPM Travel Agency (video 3 of 4)](http://www.schabell.org/2015/01/how-to-fly-with-jboss-bpm-travel-agency-part3.html)
 
-[How to fly with the JBoss BPM Travel Agency (video 1 of 4)](http://www.schabell.org/2015/01/how-to-fly-with-jboss-bpm-travel-agency.html)
+- [How to fly with the JBoss BPM Travel Agency (video 2 of 4)](http://www.schabell.org/2015/01/how-to-fly-with-jboss-bpm-travel-agency-part2.html)
 
-[Jump Start Your Rules, Events, Planning and BPM Today](http://www.schabell.org/2014/12/jump-start-rules-events-planning-bpm-today.html)
+- [How to fly with the JBoss BPM Travel Agency (video 1 of 4)](http://www.schabell.org/2015/01/how-to-fly-with-jboss-bpm-travel-agency.html)
 
-[3 Reasons You Need The New JBoss Travel Agency](http://www.schabell.org/2014/12/3-reasons-you-need-new-jboss-travel-agency.html)
+- [Jump Start Your Rules, Events, Planning and BPM Today](http://www.schabell.org/2014/12/jump-start-rules-events-planning-bpm-today.html)
 
-[How To Excite the Travel Industry With a BPM Story](http://www.schabell.org/2014/10/how-to-excite-travel-agencies-with-bpm-story.html)
+- [3 Reasons You Need The New JBoss Travel Agency](http://www.schabell.org/2014/12/3-reasons-you-need-new-jboss-travel-agency.html)
 
+- [How To Excite the Travel Industry With a BPM Story](http://www.schabell.org/2014/10/how-to-excite-travel-agencies-with-bpm-story.html)
 
 
 Released versions
