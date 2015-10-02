@@ -15,10 +15,9 @@ set SRC_DIR=%PROJECT_HOME%installs
 set PRJ_DIR=%PROJECT_HOME%projects
 set SUPPORT_DIR=%PROJECT_HOME%\support
 set TARGET_DIR=%PROJECT_HOME%\target
-set BPMS=jboss-bpmsuite-6.1.0.GA-installer.jar
-set EAP=jboss-eap-6.4.0-installer.jar
-set BPMS=jboss-bpmsuite-6.1.0.GA-installer.jar
-set BPM_VERSION=6.1
+set BPMS=jboss-bpmsuite-6.2.0.GA-installer.jar
+set EAP=jboss-eap-6.4.3-installer.jar
+set BPM_VERSION=6.2
 
 REM Fuse env
 set DEMO_HOME=%PROJECT_HOME%\target

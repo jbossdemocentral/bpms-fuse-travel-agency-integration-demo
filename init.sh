@@ -11,9 +11,9 @@ SERVER_BIN=$JBOSS_HOME/bin
 SRC_DIR=./installs
 PRJ_DIR=./projects
 SUPPORT_DIR=./support
-BPMS=jboss-bpmsuite-6.1.0.GA-installer.jar
-EAP=jboss-eap-6.4.0-installer.jar
-BPM_VERSION=6.1
+BPMS=jboss-bpmsuite-6.2.0.GA-installer.jar
+EAP=jboss-eap-6.4.3-installer.jar
+BPM_VERSION=6.2
 
 #Fuse env 
 DEMO_HOME=./target
