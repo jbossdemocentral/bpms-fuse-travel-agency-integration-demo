@@ -7,7 +7,7 @@
   "published":true,
   "prerequisites":"Java 1.7, Maven",
   "targetProduct":"JBoss BPM Suite and JBoss Fuse",
-  "productVersion":"JBoss BPM Suite 6.1, JBoss Fuse 6.2.0",
+  "productVersion":"JBoss BPM Suite 6.2, JBoss Fuse 6.2.0",
   "technologies": ["JBoss BPM Suite","JBoss Fuse"],
   "links": [ 
     {
