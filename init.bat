@@ -3,7 +3,7 @@ setlocal
 
 set PROJECT_HOME=%~dp0
 set DEMO=JBoss BPM Suite & JBoss Fuse Travel Agency Integration Demo
-set AUTHORS=Christina Lin, Eric D. Schabell, Andrew Block
+set AUTHORS=Christina Lin, Andrew Block, Eric D. Schabell
 set PROJECT=git@github.com:jbossdemocentral/bpms-fuse-travel-agency-integration-demo.git
 
 REM BPM env
