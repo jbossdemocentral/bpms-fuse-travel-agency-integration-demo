@@ -23,7 +23,7 @@ FUSE_PROJECT=projects/fuseparent
 FUSE_SERVER_CONF=$FUSE_HOME/etc
 FUSE_SERVER_SYSTEM=$FUSE_HOME/system
 FUSE_SERVER_BIN=$FUSE_HOME/bin
-FUSE_VERSION=6.1.0
+FUSE_VERSION=6.2
 
 
 
@@ -192,12 +192,12 @@ cp -f $SUPPORT_DIR/CustomWorkItemHandlers.conf $SERVER_DIR/business-central.war/
 if [ -x target ]; then
   # Unzip the JBoss FUSE instance.
 	echo
-  echo Installing JBoss FUSE $FUSE_VERSION
+  echo "JBoss Fuse installer running now..."
   echo
   unzip -q -d target $SRC_DIR/$FUSE_ZIP
 else
 	echo
-	echo Missing target directory, stopping installation.
+	echo "Missing target directory, stopping installation."
 	echo 
 	exit
 fi
