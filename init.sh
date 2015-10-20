@@ -49,7 +49,7 @@ echo "##        ####   #      #     #  ###              #     ####  ###   ####  
 echo "##                                                                                 ##"   
 echo "##                                                                                 ##"   
 echo "##  brought to you by,                                                             ##"   
-echo "##                     ${AUTHORS}                             ##"
+echo "##                     ${AUTHORS}               ##"
 echo "##                                                                                 ##"   
 echo "##  ${PROJECT}   ##"
 echo "##                                                                                 ##"   
