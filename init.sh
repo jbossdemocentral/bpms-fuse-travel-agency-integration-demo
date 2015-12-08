@@ -12,7 +12,8 @@ SRC_DIR=./installs
 PRJ_DIR=./projects
 SUPPORT_DIR=./support
 BPMS=jboss-bpmsuite-6.2.0.GA-installer.jar
-EAP=jboss-eap-6.4.3-installer.jar
+EAP=jboss-eap-6.4.0-installer.jar
+EAP_PATCH=jboss-eap-6.4.4-patch.zip
 BPM_VERSION=6.2
 
 #Fuse env 
@@ -24,7 +25,6 @@ FUSE_SERVER_CONF=$FUSE_HOME/etc
 FUSE_SERVER_SYSTEM=$FUSE_HOME/system
 FUSE_SERVER_BIN=$FUSE_HOME/bin
 FUSE_VERSION=6.2
-
 
 
 # wipe screen.
@@ -88,6 +88,16 @@ else
 	exit
 fi
 
+if [ -r $SRC_DIR/$EAP_PATCH ] || [ -L $SRC_DIR/$EAP_PATCH ]; then
+	echo EAP patches are present...
+	echo
+else
+	echo Need to download $EAP_PATCH package from the Customer Portal 
+	echo and place it in the $SRC_DIR directory to proceed...
+	echo
+	exit
+fi
+
 if [ -r $SRC_DIR/$BPMS ] || [ -L $SRC_DIR/$BPMS ]; then
 	echo Product sources BPM are present...
 	echo
@@ -129,6 +139,17 @@ if [ $? -ne 0 ]; then
 fi
 
 echo
+echo "Applying JBoss EAP 6.4.4 patch now..."
+echo
+$JBOSS_HOME/bin/jboss-cli.sh --command="patch apply $SRC_DIR/$EAP_PATCH"
+
+if [ $? -ne 0 ]; then
+	echo
+	echo Error occurred during JBoss EAP patching!
+	exit
+fi
+			
+echo
 echo "JBoss BPM Suite installer running now..."
 echo
 java -jar $SRC_DIR/$BPMS $SUPPORT_DIR/installation-bpms -variablefile $SUPPORT_DIR/installation-bpms.variables
@@ -138,6 +159,7 @@ if [ $? -ne 0 ]; then
 	exit
 fi
 
+echo
 echo "  - enabling demo accounts role setup in application-roles.properties file..."
 echo
 cp $SUPPORT_DIR/application-roles.properties $SERVER_CONF
@@ -182,8 +204,6 @@ cp $SUPPORT_DIR/userinfo.properties $SERVER_DIR/business-central.war/WEB-INF/cla
 #cp $SUPPORT_DIR/1000_jbpm_demo_h2.sql $SERVER_DIR/dashbuilder.war/WEB-INF/etc/sql
 #echo
 
-
-
 #Start Fuse installation
 if [ -x target ]; then
   # Unzip the JBoss FUSE instance.
@@ -220,18 +240,13 @@ fi
 
 cp $SUPPORT_DIR/fuse/data/travelagency.mv.db ~/h2/
 
-
 echo "  - making sure 'FUSE' for server is executable..."
 echo
 chmod u+x $FUSE_HOME/bin/start
 
-
-
 echo "  - Start up Fuse in the background"
 echo
 sh $FUSE_SERVER_BIN/start
-
-
 
 echo "  - Create Fabric in Fuse"
 echo
@@ -257,7 +272,6 @@ done
 #===================================================================
 
 cd $FUSE_PROJECT     
-
 
 echo "Start compile and deploy 3 travel agency camel demo project to fuse"
 echo         
@@ -336,9 +350,6 @@ while true; do
 done
 #===================================================================
 
-
-
-
 echo "  - Create containers and add profiles for Flight web service endpoint"
 echo         
 sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-webendpoint root wsflightcon' &> /dev/null
@@ -367,7 +378,6 @@ echo "  - Create containers and add profiles for MQ Broker"
 echo
 sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile mq-broker-mybrokergorup.travelbroker root brokercon' &> /dev/null
 
-
 COUNTER=5
 #===Test if the fabric is ready=====================================
 echo "  - Testing containers startd, retry when not ready, please be patient, it will take a while"
@@ -385,7 +395,6 @@ while true; do
 done
 #===================================================================
 
-
 echo "  - Stop all containers"
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop wsflightcon'
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop wshotelcon'
@@ -401,7 +410,6 @@ sh $FUSE_SERVER_BIN/stop
 echo "  - stopping any running fuse instances"
 echo
 jps -lm | grep karaf | grep -v grep | awk '{print $1}' | xargs kill -KILL
-
 
 echo
 echo "==========================================================================================="
@@ -433,3 +441,4 @@ echo "=                                                                         
 echo "=   $DEMO Setup Complete.                 ="
 echo "==========================================================================================="
 echo
+

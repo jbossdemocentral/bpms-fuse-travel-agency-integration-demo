@@ -141,7 +141,7 @@ Released versions
 -----------------
 See the tagged releases for the following versions of the product:
 
-- v1.2 - JBoss BPM Suite 6.2.0, JBoss EAP 6.4.3 and JBoss Fuse 6.2 with micro-service migration from traditional web services for Travel Agency project.
+- v1.2 - JBoss BPM Suite 6.2.0, JBoss EAP 6.4.4 and JBoss Fuse 6.2 with micro-service migration from traditional web services for Travel Agency project.
 
 - v1.1 - JBoss BPM Suite 6.1 and JBoss Fuse 6.2 with micro-service migration from traditional web services for Travel Agency project.
 
