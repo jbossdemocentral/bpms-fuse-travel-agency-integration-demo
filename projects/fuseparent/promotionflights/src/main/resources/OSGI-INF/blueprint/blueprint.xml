@@ -15,7 +15,7 @@
   	</bean>
   	
   	<bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
-	  	<property name="brokerURL" value="tcp://localhost:61616"/>
+	  	<property name="brokerURL" value="tcp://localhost:61618"/>
 	    <property name="userName" value="admin"/>
 	    <property name="password" value="admin"/>
   	</bean>

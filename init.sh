@@ -1,6 +1,6 @@
 #!/bin/sh 
 DEMO="JBoss BPM Suite & Fuse Travel Agency Integration Demo"
-AUTHORS="Christina Lin, Eric D. Schabell"
+AUTHORS="Christina Lin, Andrew Block, Eric D. Schabell"
 PROJECT="git@github.com:jbossdemocentral/bpms-fuse-travel-agency-integration-demo.git"
 
 #BPM env
@@ -23,7 +23,7 @@ FUSE_PROJECT=projects/fuseparent
 FUSE_SERVER_CONF=$FUSE_HOME/etc
 FUSE_SERVER_SYSTEM=$FUSE_HOME/system
 FUSE_SERVER_BIN=$FUSE_HOME/bin
-FUSE_VERSION=6.1.0
+FUSE_VERSION=6.2
 
 
 
@@ -49,7 +49,7 @@ echo "##        ####   #      #     #  ###              #     ####  ###   ####  
 echo "##                                                                                 ##"   
 echo "##                                                                                 ##"   
 echo "##  brought to you by,                                                             ##"   
-echo "##                     ${AUTHORS}                             ##"
+echo "##                     ${AUTHORS}               ##"
 echo "##                                                                                 ##"   
 echo "##  ${PROJECT}   ##"
 echo "##                                                                                 ##"   
@@ -176,10 +176,6 @@ echo "  - setup email task notification users..."
 echo
 cp $SUPPORT_DIR/userinfo.properties $SERVER_DIR/business-central.war/WEB-INF/classes/
 
-echo "  - updating the CustomWorkItemHandler.conf file to use the appropriate email server..."
-echo
-cp -f $SUPPORT_DIR/CustomWorkItemHandlers.conf $SERVER_DIR/business-central.war/WEB-INF/classes/META-INF
-
 # Optional: uncomment this to install mock data for BPM Suite.
 #
 #echo - setting up mock bpm dashboard data...
@@ -192,12 +188,12 @@ cp -f $SUPPORT_DIR/CustomWorkItemHandlers.conf $SERVER_DIR/business-central.war/
 if [ -x target ]; then
   # Unzip the JBoss FUSE instance.
 	echo
-  echo Installing JBoss FUSE $FUSE_VERSION
+  echo "JBoss Fuse installer running now..."
   echo
   unzip -q -d target $SRC_DIR/$FUSE_ZIP
 else
 	echo
-	echo Missing target directory, stopping installation.
+	echo "Missing target directory, stopping installation."
 	echo 
 	exit
 fi
@@ -316,6 +312,10 @@ sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --bundle mvn:org.blogd
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --repository mvn:org.blogdemo.travelagency/features/1.0/xml/features demo-travelagency-promotionhotel' &> /dev/null
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'fabric:profile-edit --feature promotion-service/0.0.0 demo-travelagency-promotionhotel' &> /dev/null
 
+#Creating MQ Broker
+echo "  - Create MQ Broker profile"
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'mq-create --group mybrokergorup travelbroker' &> /dev/null
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'profile-edit --pid io.fabric8.mq.fabric.server-travelbroker/openwire-port=61618 mq-broker-mybrokergorup.travelbroker' &> /dev/null
 
 
 COUNTER=10
@@ -363,12 +363,16 @@ echo "  - Create containers and add profiles hotel promotion"
 echo
 sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile demo-travelagency-promotionhotel root promohotelcon' &> /dev/null
 
+echo "  - Create containers and add profiles for MQ Broker"
+echo
+sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile mq-broker-mybrokergorup.travelbroker root brokercon' &> /dev/null
+
 
 COUNTER=5
 #===Test if the fabric is ready=====================================
 echo "  - Testing containers startd, retry when not ready, please be patient, it will take a while"
 while true; do
-    if [ $(sh $FUSE_SERVER_BIN/client 'container-list'| grep "success" | wc -l ) -ge 7 ]; then
+    if [ $(sh $FUSE_SERVER_BIN/client 'container-list'| grep "success" | wc -l ) -ge 8 ]; then
         break
     fi
     
@@ -389,6 +393,7 @@ sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop bookingflightcon'
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop bookinhotelgcon'
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop promoflightcon'
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop promohotelcon'
+sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop brokercon'
 
 echo "  - Stoping Root Container (Fabric)"
 sh $FUSE_SERVER_BIN/stop

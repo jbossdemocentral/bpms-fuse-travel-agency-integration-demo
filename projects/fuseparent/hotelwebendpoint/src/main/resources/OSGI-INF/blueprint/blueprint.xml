@@ -9,7 +9,7 @@
        http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
          		
   		<bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-        	<property name="brokerURL" value="tcp://localhost:61616"/>
+        	<property name="brokerURL" value="tcp://localhost:61618"/>
 	    	<property name="userName" value="admin"/>
 	    	<property name="password" value="admin"/>
     	</bean>
@@ -38,9 +38,6 @@
   <route>
     <from uri="cxf:bean:hotelEndpoint"/>
     <log message="${header.operationName}"/>
-    <setHeader headerName="operationName">
-      <constant>getAvailableHotel</constant>
-    </setHeader>
     <recipientList>
       <simple>direct:${header.operationName}</simple>
     </recipientList>

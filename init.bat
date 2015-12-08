@@ -3,7 +3,7 @@ setlocal
 
 set PROJECT_HOME=%~dp0
 set DEMO=JBoss BPM Suite & JBoss Fuse Travel Agency Integration Demo
-set AUTHORS=Christina Lin, Eric D. Schabell, Andrew Block
+set AUTHORS=Christina Lin, Andrew Block, Eric D. Schabell
 set PROJECT=git@github.com:jbossdemocentral/bpms-fuse-travel-agency-integration-demo.git
 
 REM BPM env
@@ -171,10 +171,6 @@ xcopy /Y /Q "%SUPPORT_DIR%\standalone.xml" "%SERVER_CONF%"
 echo - setup email task notification users...
 echo.
 xcopy /Y /Q "%SUPPORT_DIR%\userinfo.properties" "%SERVER_DIR%\business-central.war\WEB-INF\classes\"
-
-echo   - updating the CustomWorkItemHandler.conf file to use the appropriate email server...
-echo.
-xcopy /Y /Q "%SUPPORT_DIR%\CustomWorkItemHandlers.conf" "%SERVER_DIR%\business-central.war\WEB-INF\classes\META-INF\"
 
 
 REM Optional: uncomment this to install mock data for BPM Suite.

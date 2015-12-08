@@ -1,0 +1,11 @@
+id: jbossdemocentral-bpms-fuse-travel-agency-integration
+title: JBoss BPM Suite and Fuse Travel Agency Integration Demo
+github_repo_url: https://github.com/jbossdemocentral/bpms-fuse-travel-agency-integration-demo
+technologies:
+  - JBoss EAP
+  - JBoss BPM Suite
+  - JBoss Fuse
+summary: Demo based on JBoss BPM Suite and JBoss Fuse products to highlight migration to micro-services. The installation will take some time as the Fuse containers are provisioned automatically for you during the installation phase so that the micro-services only need to be started before running the JBoss Travel Agency process.
+level: Intermediate
+product: bpmsuite
+author: Christina Lin, Andrew Block, Eric D. Schabell
