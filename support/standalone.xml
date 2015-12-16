@@ -29,6 +29,7 @@
       <property name="org.kie.demo" value="${org.kie.demo:false}"/>
       <property name="org.kie.example" value="${org.kie.example:false}"/>
       <property name="org.jbpm.designer.perspective" value="${org.jbpm.designer.perspective:full}"/>
+			<property name="org.kie.server.repo" value="${jboss.server.data.dir}"/>
       <property name="org.uberfire.nio.git.dir" value="${jboss.home.dir}/bin"/>
       <property name="org.uberfire.metadata.index.dir" value="${jboss.home.dir}/bin"/>
       <property name="org.guvnor.m2repo.dir" value="${jboss.home.dir}/bin"/>
