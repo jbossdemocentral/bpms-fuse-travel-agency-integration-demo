@@ -15,10 +15,10 @@ set SRC_DIR=%PROJECT_HOME%installs
 set PRJ_DIR=%PROJECT_HOME%projects
 set SUPPORT_DIR=%PROJECT_HOME%\support
 set TARGET_DIR=%PROJECT_HOME%\target
-set BPMS=jboss-bpmsuite-6.1.0.GA-installer.jar
+set BPMS=jboss-bpmsuite-installer-6.2.0.BZ-1299002.jar
 set EAP=jboss-eap-6.4.0-installer.jar
-set BPMS=jboss-bpmsuite-6.1.0.GA-installer.jar
-set BPM_VERSION=6.1
+set EAP_PATCH=jboss-eap-6.4.4-patch.zip
+set BPM_VERSION=6.2
 
 REM Fuse env
 set DEMO_HOME=%PROJECT_HOME%\target
@@ -72,6 +72,16 @@ if exist %SRC_DIR%\%EAP% (
 	GOTO :EOF
 )
 
+if exist %SRC_DIR%\%EAP_PATCH% (
+        echo Product patches are present...
+        echo.
+) else (
+        echo Need to download %EAP_PATCH% package from the Customer Support Portal
+        echo and place it in the %SRC_DIR% directory to proceed...
+        echo.
+        GOTO :EOF
+)
+
 if exist %SRC_DIR%\%BPMS% (
 	echo BPM sources are present...
 	echo.
@@ -92,8 +102,6 @@ if exist %SRC_DIR%\%FUSE_ZIP% (
 	GOTO :EOF
 )
 
-
-
 REM Move the old JBoss instance, if it exists, to the OLD position.
 if exist %TARGET_DIR% (
     echo   - existing JBoss product installation detected...
@@ -110,6 +118,20 @@ call java -jar %SRC_DIR%/%EAP% %SUPPORT_DIR%\installation-eap -variablefile %SUP
 
 if not "%ERRORLEVEL%" == "0" (
 	echo Error Occurred during the JBoss EAP Installation!
+	echo.
+	GOTO :EOF
+)
+
+call set NOPAUSE=true
+
+echo.
+echo Applying JBoss EAP patch now...
+echo.
+call %JBOSS_HOME%/bin/jboss-cli.bat --command="patch apply %SRC_DIR%/%EAP_PATCH% --override-all"
+
+if not "%ERRORLEVEL%" == "0" (
+  echo.
+	echo Error Occurred During JBoss EAP Patch Installation!
 	echo.
 	GOTO :EOF
 )
@@ -177,13 +199,11 @@ echo   - updating the CustomWorkItemHandler.conf file to use the appropriate ema
 echo.
 xcopy /Y /Q "%SUPPORT_DIR%\CustomWorkItemHandlers.conf" "%SERVER_DIR%\business-central.war\WEB-INF\classes\META-INF\"
 
-
 REM Optional: uncomment this to install mock data for BPM Suite.
 REM
 REM echo - setting up mock bpm dashboard data...
 REM xcopy /Y /Q "%SUPPORT_DIR%\1000_jbpm_demo_h2.sql" "%SERVER_DIR%\dashbuilder.war\WEB-INF\etc\sql\"
 REM echo.
-
 
 echo   - enabling demo accounts logins in users.properties file...
 echo.
@@ -192,7 +212,6 @@ xcopy /Y /Q "%SUPPORT_DIR%\fuse\users.properties" "%FUSE_SERVER_CONF%"
 echo   - Add local bpm repo config file...
 echo.
 xcopy /Y /Q "%SUPPORT_DIR%\fuse\org.ops4j.pax.url.mvn.cfg" "%FUSE_SERVER_CONF%"
-
 
 if exist %USERPROFILE%\h2 (
 	 del /F %USERPROFILE%\h2\travelagency.mv.db

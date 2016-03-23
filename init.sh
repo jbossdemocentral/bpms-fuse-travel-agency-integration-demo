@@ -11,9 +11,10 @@ SERVER_BIN=$JBOSS_HOME/bin
 SRC_DIR=./installs
 PRJ_DIR=./projects
 SUPPORT_DIR=./support
-BPMS=jboss-bpmsuite-6.1.0.GA-installer.jar
+BPMS=jboss-bpmsuite-installer-6.2.0.BZ-1299002.jar
 EAP=jboss-eap-6.4.0-installer.jar
-BPM_VERSION=6.1
+EAP_PATCH=jboss-eap-6.4.4-patch.zip
+BPM_VERSION=6.2
 
 #Fuse env 
 DEMO_HOME=./target
@@ -88,6 +89,16 @@ else
 	exit
 fi
 
+if [ -r $SRC_DIR/$EAP_PATCH ] || [ -L $SRC_DIR/$EAP_PATCH ]; then
+	echo Product patches are present...
+	echo
+else
+	echo Need to download $EAP_PATCH package from the Customer Portal 
+	echo and place it in the $SRC_DIR directory to proceed...
+	echo
+	exit
+fi
+
 if [ -r $SRC_DIR/$BPMS ] || [ -L $SRC_DIR/$BPMS ]; then
 	echo Product sources BPM are present...
 	echo
@@ -129,6 +140,17 @@ if [ $? -ne 0 ]; then
 fi
 
 echo
+echo "Applying JBoss EAP 6.4.4 patch now..."
+echo
+$JBOSS_HOME/bin/jboss-cli.sh --command="patch apply $SRC_DIR/$EAP_PATCH"
+
+if [ $? -ne 0 ]; then
+	echo
+	echo Error occurred during JBoss EAP patching!
+	exit
+fi
+
+echo
 echo "JBoss BPM Suite installer running now..."
 echo
 java -jar $SRC_DIR/$BPMS $SUPPORT_DIR/installation-bpms -variablefile $SUPPORT_DIR/installation-bpms.variables
@@ -149,11 +171,6 @@ cp -r $SUPPORT_DIR/bpm-suite-demo-niogit $SERVER_BIN/.niogit
 echo "  - setting up web services..."
 echo
 mvn clean install -f $PRJ_DIR/pom.xml
-
-# Not copying original web serivces as building new Fuse microservices instead.
-#
-#cp -r $PRJ_DIR/acme-demo-flight-service/target/acme-flight-service-1.0.war $SERVER_DIR
-#cp -r $PRJ_DIR/acme-demo-hotel-service/target/acme-hotel-service-1.0.war $SERVER_DIR
 
 echo
 echo "  - adding acmeDataModel-1.0.jar to business-central.war/WEB-INF/lib"
@@ -187,7 +204,6 @@ cp -f $SUPPORT_DIR/CustomWorkItemHandlers.conf $SERVER_DIR/business-central.war/
 #echo
 
 
-
 #Start Fuse installation
 if [ -x target ]; then
   # Unzip the JBoss FUSE instance.
@@ -215,7 +231,6 @@ echo "  - enable camel counter in console in jmx.acl.whitelist.properties  ..."
 echo
 cp $SUPPORT_DIR/fuse/jmx.acl.whitelist.properties $FUSE_HOME/fabric/import/fabric/profiles/default.profile/
 
-
 if [ -x ~/h2 ]; then
 	rm -rf ~/h2/travelagency.mv.db
 else
@@ -224,18 +239,13 @@ fi
 
 cp $SUPPORT_DIR/fuse/data/travelagency.mv.db ~/h2/
 
-
 echo "  - making sure 'FUSE' for server is executable..."
 echo
 chmod u+x $FUSE_HOME/bin/start
 
-
-
 echo "  - Start up Fuse in the background"
 echo
 sh $FUSE_SERVER_BIN/start
-
-
 
 echo "  - Create Fabric in Fuse"
 echo
@@ -261,7 +271,6 @@ done
 #===================================================================
 
 cd $FUSE_PROJECT     
-
 
 echo "Start compile and deploy 3 travel agency camel demo project to fuse"
 echo         
@@ -321,7 +330,6 @@ echo "  - Create MQ Broker profile"
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'mq-create --group mybrokergorup travelbroker' &> /dev/null
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'profile-edit --pid io.fabric8.mq.fabric.server-travelbroker/openwire-port=61618 mq-broker-mybrokergorup.travelbroker' &> /dev/null
 
-
 COUNTER=10
 #===Test if the fabric is ready=====================================
 echo Testing profiles,retry when not ready
@@ -339,9 +347,6 @@ while true; do
     sleep 2
 done
 #===================================================================
-
-
-
 
 echo "  - Create containers and add profiles for Flight web service endpoint"
 echo         
@@ -371,7 +376,6 @@ echo "  - Create containers and add profiles for MQ Broker"
 echo
 sh $FUSE_SERVER_BIN/client -r 2 -d 5 'container-create-child --profile mq-broker-mybrokergorup.travelbroker root brokercon' &> /dev/null
 
-
 COUNTER=5
 #===Test if the fabric is ready=====================================
 echo "  - Testing containers startd, retry when not ready, please be patient, it will take a while"
@@ -389,7 +393,6 @@ while true; do
 done
 #===================================================================
 
-
 echo "  - Stop all containers"
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop wsflightcon'
 sh $FUSE_SERVER_BIN/client -r 2 -d 3 'container-stop wshotelcon'
@@ -405,7 +408,6 @@ sh $FUSE_SERVER_BIN/stop
 echo "  - stopping any running fuse instances"
 echo
 jps -lm | grep karaf | grep -v grep | awk '{print $1}' | xargs kill -KILL
-
 
 echo
 echo "==========================================================================================="
